@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { LayoutDashboard, Package, Users, Crosshair, Settings, Radar } from "lucide-react"
+import { LayoutDashboard, Package, Users, Crosshair, Settings, Radar, ScanSearch } from "lucide-react"
 import { cn } from "@/lib/utils"
 
 const NAV = [
@@ -10,6 +10,7 @@ const NAV = [
   { href: "/produtos", label: "Produtos", icon: Package },
   { href: "/compradores", label: "Compradores", icon: Users },
   { href: "/oportunidades", label: "Oportunidades", icon: Crosshair },
+  { href: "/radar", label: "Radar JK", icon: ScanSearch },
   { href: "/configuracoes", label: "Configurações", icon: Settings },
 ]
 
@@ -53,7 +54,7 @@ export function Sidebar() {
 
       <div className="hidden border-t border-border p-4 md:block">
         <p className="text-[11px] leading-relaxed text-muted-foreground">
-          Fase 1 — Fundação. Sem integrações externas.
+          Fase 2 — Radar de oportunidades. Sem integrações externas.
         </p>
       </div>
     </aside>

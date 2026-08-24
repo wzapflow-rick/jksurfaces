@@ -72,6 +72,9 @@ function seedStore(): Store {
 }
 
 const store: Store = globalForStore.__radarJkStore ?? seedStore()
+// Backfill de coleções adicionadas em fases posteriores, para que um store já
+// em cache (HMR/dev) não quebre ao acessar campos novos como radarOpportunities.
+store.radarOpportunities ??= []
 globalForStore.__radarJkStore = store
 
 export const memoryRepo: Repository = {

@@ -1,4 +1,5 @@
 /** @type {import('next').NextConfig} */
+// Fase 2 — Radar JK
 const nextConfig = {
   async headers() {
     return [
