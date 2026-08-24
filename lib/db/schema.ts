@@ -166,6 +166,24 @@ export const huntMissions = pgTable("hunt_missions", {
   updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
 })
 
+/**
+ * INTELIGÊNCIA DE BUSCA — Fase 5.
+ * Consultas geradas a partir de uma missão. Removidas em cascata quando a
+ * missão é excluída. `source_id` fica preparado para consultas por fonte no
+ * futuro; hoje as consultas são canônicas (source_id nulo).
+ */
+export const huntSearchQueries = pgTable("hunt_search_queries", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  missionId: uuid("mission_id")
+    .notNull()
+    .references(() => huntMissions.id, { onDelete: "cascade" }),
+  sourceId: uuid("source_id"),
+  query: text("query").notNull(),
+  type: text("type").notNull(),
+  priority: integer("priority").notNull().default(0),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+})
+
 export const settings = pgTable("settings", {
   id: text("id").primaryKey().default("default"),
   costPct: numeric("cost_pct", { precision: 5, scale: 2 }).notNull().default("62"),

@@ -7,6 +7,7 @@ import type {
   PricingSettings,
   Product,
   RadarOpportunity,
+  SearchQuery,
 } from "@/types"
 import { SEED_PRODUCTS } from "@/lib/db/seed-data"
 import { DEFAULT_HUNT_SOURCES, DEFAULT_SETTINGS } from "./dto"
@@ -18,6 +19,7 @@ import type {
   OfferInput,
   ProductInput,
   RadarOpportunityInput,
+  SearchQueryInput,
   SettingsInput,
 } from "./dto"
 import type { Repository } from "./repository-interface"
@@ -40,6 +42,7 @@ interface Store {
   radarOpportunities: RadarOpportunity[]
   huntSources: HuntSource[]
   huntMissions: HuntMission[]
+  huntSearchQueries: SearchQuery[]
   settings: PricingSettings
 }
 
@@ -84,6 +87,7 @@ function seedStore(): Store {
       updatedAt: now,
     })),
     huntMissions: [],
+    huntSearchQueries: [],
     settings: { ...DEFAULT_SETTINGS, updatedAt: now },
   }
 }
@@ -106,6 +110,7 @@ if (!store.huntSources || store.huntSources.length === 0) {
   }))
 }
 store.huntMissions ??= []
+store.huntSearchQueries ??= []
 globalForStore.__radarJkStore = store
 
 export const memoryRepo: Repository = {
@@ -272,5 +277,32 @@ export const memoryRepo: Repository = {
   },
   async deleteHuntMission(id) {
     store.huntMissions = store.huntMissions.filter((m) => m.id !== id)
+    // Cascata: remove as consultas inteligentes da missão.
+    store.huntSearchQueries = store.huntSearchQueries.filter((q) => q.missionId !== id)
+  },
+
+  async listSearchQueriesByMission(missionId) {
+    return store.huntSearchQueries
+      .filter((q) => q.missionId === missionId)
+      .map((q) => ({ ...q }))
+      .sort((a, b) => b.priority - a.priority)
+  },
+  async replaceSearchQueriesForMission(missionId: string, inputs: SearchQueryInput[]) {
+    const now = nowIso()
+    store.huntSearchQueries = store.huntSearchQueries.filter((q) => q.missionId !== missionId)
+    const created: SearchQuery[] = inputs.map((i) => ({
+      id: crypto.randomUUID(),
+      missionId: i.missionId,
+      sourceId: i.sourceId,
+      query: i.query,
+      type: i.type,
+      priority: i.priority,
+      createdAt: now,
+    }))
+    store.huntSearchQueries.push(...created)
+    return created.map((q) => ({ ...q })).sort((a, b) => b.priority - a.priority)
+  },
+  async deleteSearchQueriesForMission(missionId) {
+    store.huntSearchQueries = store.huntSearchQueries.filter((q) => q.missionId !== missionId)
   },
 }

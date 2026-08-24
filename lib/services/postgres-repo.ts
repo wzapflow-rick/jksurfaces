@@ -1,4 +1,4 @@
-import { eq } from "drizzle-orm"
+import { desc, eq } from "drizzle-orm"
 import type {
   AcquisitionStatus,
   Buyer,
@@ -15,6 +15,8 @@ import type {
   RadarOpportunity,
   RadarSource,
   RadarStatus,
+  SearchQuery,
+  SearchQueryType,
 } from "@/types"
 import { db, schema } from "@/lib/db/client"
 import { DEFAULT_SETTINGS } from "./dto"
@@ -26,6 +28,7 @@ import type {
   OfferInput,
   ProductInput,
   RadarOpportunityInput,
+  SearchQueryInput,
   SettingsInput,
 } from "./dto"
 import type { Repository } from "./repository-interface"
@@ -54,6 +57,7 @@ type OfferRow = typeof schema.offers.$inferSelect
 type RadarRow = typeof schema.radarOpportunities.$inferSelect
 type HuntSourceRow = typeof schema.huntSources.$inferSelect
 type HuntMissionRow = typeof schema.huntMissions.$inferSelect
+type SearchQueryRow = typeof schema.huntSearchQueries.$inferSelect
 
 function mapProduct(row: ProductRow): Product {
   return {
@@ -212,6 +216,18 @@ function huntMissionValues(input: Partial<HuntMissionInput>) {
   if (input.status !== undefined) values.status = input.status
   if (input.notes !== undefined) values.notes = input.notes
   return values
+}
+
+function mapSearchQuery(row: SearchQueryRow): SearchQuery {
+  return {
+    id: row.id,
+    missionId: row.missionId,
+    sourceId: row.sourceId,
+    query: row.query,
+    type: row.type as SearchQueryType,
+    priority: row.priority,
+    createdAt: iso(row.createdAt),
+  }
 }
 
 function requireDb() {
@@ -478,7 +494,41 @@ export const postgresRepo: Repository = {
   },
   async deleteHuntMission(id) {
     const d = requireDb()
+    // Remove as consultas primeiro (o FK também tem ON DELETE CASCADE).
+    await d.delete(schema.huntSearchQueries).where(eq(schema.huntSearchQueries.missionId, id))
     await d.delete(schema.huntMissions).where(eq(schema.huntMissions.id, id))
+  },
+
+  async listSearchQueriesByMission(missionId) {
+    const d = requireDb()
+    const rows = await d
+      .select()
+      .from(schema.huntSearchQueries)
+      .where(eq(schema.huntSearchQueries.missionId, missionId))
+      .orderBy(desc(schema.huntSearchQueries.priority))
+    return rows.map(mapSearchQuery)
+  },
+  async replaceSearchQueriesForMission(missionId: string, inputs: SearchQueryInput[]) {
+    const d = requireDb()
+    await d.delete(schema.huntSearchQueries).where(eq(schema.huntSearchQueries.missionId, missionId))
+    if (inputs.length === 0) return []
+    const rows = await d
+      .insert(schema.huntSearchQueries)
+      .values(
+        inputs.map((i) => ({
+          missionId: i.missionId,
+          sourceId: i.sourceId,
+          query: i.query,
+          type: i.type,
+          priority: i.priority,
+        })) as never,
+      )
+      .returning()
+    return rows.map(mapSearchQuery).sort((a, b) => b.priority - a.priority)
+  },
+  async deleteSearchQueriesForMission(missionId) {
+    const d = requireDb()
+    await d.delete(schema.huntSearchQueries).where(eq(schema.huntSearchQueries.missionId, missionId))
   },
 }
 

@@ -157,6 +157,28 @@ export const huntMissionSchema = z.object({
   notes: z.string().trim().nullable().optional().transform((v) => v || null),
 })
 
+/* ---------------------------------------------------------------------------
+   INTELIGÊNCIA DE BUSCA (Fase 5)
+   -------------------------------------------------------------------------- */
+
+const searchQueryType = z.enum([
+  "EXACT",
+  "BRAND_MODEL",
+  "PRODUCT_MODEL",
+  "PRODUCT_BRAND",
+  "SKU",
+  "SKU_BRAND",
+  "BROAD",
+])
+
+export const searchQuerySchema = z.object({
+  missionId: z.string().min(1),
+  sourceId: z.string().min(1).nullable().optional().transform((v) => v ?? null),
+  query: z.string().trim().min(1, "Consulta vazia não é permitida"),
+  type: searchQueryType,
+  priority: z.coerce.number().int().min(0).max(100),
+})
+
 export const settingsSchema = z
   .object({
     costPct: z.coerce.number().min(0).max(100),
