@@ -133,6 +133,39 @@ export const radarOpportunities = pgTable("radar_opportunities", {
   updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
 })
 
+/**
+ * CENTRAL DE CAÇA — Fase 4.
+ * Fontes onde procurar e missões de aquisição. Tabelas independentes; não
+ * referenciam radar_opportunities/products para não acoplar as fases.
+ */
+export const huntSources = pgTable("hunt_sources", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  name: text("name").notNull(),
+  type: text("type").notNull().default("OUTRO"),
+  urlBase: text("url_base"),
+  searchUrlTemplate: text("search_url_template"),
+  active: boolean("active").notNull().default(true),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+})
+
+export const huntMissions = pgTable("hunt_missions", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  name: text("name").notNull(),
+  description: text("description"),
+  sku: text("sku"),
+  searchTerm: text("search_term").notNull(),
+  brand: text("brand"),
+  category: text("category"),
+  expectedSalePrice: numeric("expected_sale_price", { precision: 12, scale: 2 }).notNull(),
+  sourceIds: uuid("source_ids").array().notNull().default([]),
+  priority: text("priority").notNull().default("MEDIA"),
+  status: text("status").notNull().default("ATIVA"),
+  notes: text("notes"),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+})
+
 export const settings = pgTable("settings", {
   id: text("id").primaryKey().default("default"),
   costPct: numeric("cost_pct", { precision: 5, scale: 2 }).notNull().default("62"),

@@ -3,6 +3,9 @@ import { twMerge } from "tailwind-merge"
 import type {
   AcquisitionStatus,
   CommercialPriority,
+  HuntPriority,
+  HuntSourceType,
+  HuntStatus,
   RadarClassification,
   RadarRecommendation,
   RadarSource,
@@ -120,6 +123,84 @@ export const RADAR_SOURCE_META: Record<RadarSource, { label: string }> = {
   CHATUBA: { label: "Chatuba" },
   MARKETPLACE: { label: "Marketplace" },
   OUTRO: { label: "Outro" },
+}
+
+/* ---------------------------------------------------------------------------
+   CENTRAL DE CAÇA (Fase 4) — metadados de exibição
+   -------------------------------------------------------------------------- */
+
+export const HUNT_PRIORITY_META: Record<
+  HuntPriority,
+  { label: string; tone: string; dot: string }
+> = {
+  ALTA: {
+    label: "Alta",
+    tone: "border-status-hot/30 bg-status-hot/10 text-status-hot",
+    dot: "bg-status-hot",
+  },
+  MEDIA: {
+    label: "Média",
+    tone: "border-status-watch/30 bg-status-watch/10 text-status-watch",
+    dot: "bg-status-watch",
+  },
+  BAIXA: {
+    label: "Baixa",
+    tone: "border-border-strong bg-muted text-muted-foreground",
+    dot: "bg-muted-foreground",
+  },
+}
+
+export const HUNT_STATUS_META: Record<HuntStatus, { label: string; tone: string }> = {
+  ATIVA: { label: "Ativa", tone: "border-status-go/30 bg-status-go/10 text-status-go" },
+  PAUSADA: { label: "Pausada", tone: "border-status-watch/30 bg-status-watch/10 text-status-watch" },
+  CONCLUIDA: { label: "Concluída", tone: "border-primary/30 bg-primary/10 text-primary" },
+  CANCELADA: { label: "Cancelada", tone: "border-status-stop/30 bg-status-stop/10 text-status-stop" },
+}
+
+export const HUNT_SOURCE_TYPE_META: Record<HuntSourceType, { label: string }> = {
+  MARKETPLACE: { label: "Marketplace" },
+  LOJA_FISICA: { label: "Loja física" },
+  FORNECEDOR: { label: "Fornecedor" },
+  OUTRO: { label: "Outro" },
+}
+
+/**
+ * Monta a URL de abertura de uma fonte para um termo de busca. Prioriza o
+ * template de busca conhecido; se não houver, cai na urlBase. Nunca inventa
+ * URLs de pesquisa.
+ */
+export function buildSourceOpenUrl(
+  source: { urlBase: string | null; searchUrlTemplate: string | null },
+  searchTerm: string,
+): { openUrl: string | null; isSearch: boolean } {
+  const term = searchTerm.trim()
+  if (source.searchUrlTemplate && term) {
+    return {
+      openUrl: source.searchUrlTemplate.replace("{q}", encodeURIComponent(term)),
+      isSearch: true,
+    }
+  }
+  if (source.urlBase) return { openUrl: source.urlBase, isSearch: false }
+  return { openUrl: null, isSearch: false }
+}
+
+/**
+ * Mapeia uma fonte de caça (Fase 4) para o enum de fonte do Radar (Fase 3),
+ * usado ao converter uma missão em oportunidade via "Encontrei".
+ */
+export function huntSourceToRadarSource(name: string): RadarSource {
+  const normalized = name.trim().toLowerCase()
+  if (normalized.includes("olx")) return "OLX"
+  if (normalized.includes("mercado")) return "MERCADO_LIVRE"
+  if (normalized.includes("chatuba")) return "CHATUBA"
+  if (
+    normalized.includes("marketplace") ||
+    normalized.includes("facebook") ||
+    normalized.includes("shopee")
+  ) {
+    return "MARKETPLACE"
+  }
+  return "OUTRO"
 }
 
 /* ---------------------------------------------------------------------------

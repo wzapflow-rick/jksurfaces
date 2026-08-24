@@ -1,8 +1,10 @@
 import { getDashboardData } from "@/lib/services/radar-service"
+import { getHuntDashboardData } from "@/lib/services/hunt-service"
 import { PageHeader } from "@/components/layout/page-header"
 import { DbBanner } from "@/components/layout/db-banner"
 import { StatCards } from "@/components/dashboard/stat-cards"
 import { HuntSection } from "@/components/dashboard/hunt-section"
+import { HuntMissionsSection } from "@/components/dashboard/hunt-missions-section"
 import { StatusBadge } from "@/components/ui/status-badge"
 import { formatBRL } from "@/lib/utils"
 import Link from "next/link"
@@ -11,7 +13,7 @@ import { AlertTriangle, Target } from "lucide-react"
 export const dynamic = "force-dynamic"
 
 export default async function DashboardPage() {
-  const data = await getDashboardData()
+  const [data, huntData] = await Promise.all([getDashboardData(), getHuntDashboardData()])
 
   return (
     <div className="flex flex-col gap-6">
@@ -32,6 +34,8 @@ export default async function DashboardPage() {
       <DbBanner />
 
       <StatCards data={data} />
+
+      <HuntMissionsSection data={huntData} />
 
       <HuntSection products={data.hunt} />
 

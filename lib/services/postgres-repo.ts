@@ -4,6 +4,11 @@ import type {
   Buyer,
   BuyerProduct,
   CommercialPriority,
+  HuntMission,
+  HuntPriority,
+  HuntSource,
+  HuntSourceType,
+  HuntStatus,
   Offer,
   PricingSettings,
   Product,
@@ -16,6 +21,8 @@ import { DEFAULT_SETTINGS } from "./dto"
 import type {
   BuyerInput,
   BuyerProductInput,
+  HuntMissionInput,
+  HuntSourceInput,
   OfferInput,
   ProductInput,
   RadarOpportunityInput,
@@ -45,6 +52,8 @@ type BuyerRow = typeof schema.buyers.$inferSelect
 type BuyerProductRow = typeof schema.buyerProducts.$inferSelect
 type OfferRow = typeof schema.offers.$inferSelect
 type RadarRow = typeof schema.radarOpportunities.$inferSelect
+type HuntSourceRow = typeof schema.huntSources.$inferSelect
+type HuntMissionRow = typeof schema.huntMissions.$inferSelect
 
 function mapProduct(row: ProductRow): Product {
   return {
@@ -144,6 +153,64 @@ function radarValues(input: Partial<RadarOpportunityInput>) {
   if (input.opportunityDate !== undefined) values.opportunityDate = new Date(input.opportunityDate)
   if (input.notes !== undefined) values.notes = input.notes
   if (input.status !== undefined) values.status = input.status
+  return values
+}
+
+function mapHuntSource(row: HuntSourceRow): HuntSource {
+  return {
+    id: row.id,
+    name: row.name,
+    type: row.type as HuntSourceType,
+    urlBase: row.urlBase,
+    searchUrlTemplate: row.searchUrlTemplate,
+    active: row.active,
+    createdAt: iso(row.createdAt),
+    updatedAt: iso(row.updatedAt),
+  }
+}
+
+function huntSourceValues(input: Partial<HuntSourceInput>) {
+  const values: Record<string, unknown> = {}
+  if (input.name !== undefined) values.name = input.name
+  if (input.type !== undefined) values.type = input.type
+  if (input.urlBase !== undefined) values.urlBase = input.urlBase
+  if (input.searchUrlTemplate !== undefined) values.searchUrlTemplate = input.searchUrlTemplate
+  if (input.active !== undefined) values.active = input.active
+  return values
+}
+
+function mapHuntMission(row: HuntMissionRow): HuntMission {
+  return {
+    id: row.id,
+    name: row.name,
+    description: row.description,
+    sku: row.sku,
+    searchTerm: row.searchTerm,
+    brand: row.brand,
+    category: row.category,
+    expectedSalePrice: num(row.expectedSalePrice) ?? 0,
+    sourceIds: row.sourceIds ?? [],
+    priority: row.priority as HuntPriority,
+    status: row.status as HuntStatus,
+    notes: row.notes,
+    createdAt: iso(row.createdAt),
+    updatedAt: iso(row.updatedAt),
+  }
+}
+
+function huntMissionValues(input: Partial<HuntMissionInput>) {
+  const values: Record<string, unknown> = {}
+  if (input.name !== undefined) values.name = input.name
+  if (input.description !== undefined) values.description = input.description
+  if (input.sku !== undefined) values.sku = input.sku
+  if (input.searchTerm !== undefined) values.searchTerm = input.searchTerm
+  if (input.brand !== undefined) values.brand = input.brand
+  if (input.category !== undefined) values.category = input.category
+  if (input.expectedSalePrice !== undefined) values.expectedSalePrice = String(input.expectedSalePrice)
+  if (input.sourceIds !== undefined) values.sourceIds = input.sourceIds
+  if (input.priority !== undefined) values.priority = input.priority
+  if (input.status !== undefined) values.status = input.status
+  if (input.notes !== undefined) values.notes = input.notes
   return values
 }
 
@@ -354,6 +421,64 @@ export const postgresRepo: Repository = {
   async deleteRadarOpportunity(id) {
     const d = requireDb()
     await d.delete(schema.radarOpportunities).where(eq(schema.radarOpportunities.id, id))
+  },
+
+  async listHuntSources() {
+    const d = requireDb()
+    const rows = await d.select().from(schema.huntSources)
+    return rows.map(mapHuntSource).sort((a, b) => a.name.localeCompare(b.name, "pt-BR"))
+  },
+  async getHuntSource(id) {
+    const d = requireDb()
+    const rows = await d.select().from(schema.huntSources).where(eq(schema.huntSources.id, id))
+    return rows[0] ? mapHuntSource(rows[0]) : null
+  },
+  async createHuntSource(input: HuntSourceInput) {
+    const d = requireDb()
+    const rows = await d.insert(schema.huntSources).values(huntSourceValues(input) as never).returning()
+    return mapHuntSource(rows[0])
+  },
+  async updateHuntSource(id, input) {
+    const d = requireDb()
+    const rows = await d
+      .update(schema.huntSources)
+      .set({ ...huntSourceValues(input), updatedAt: new Date() } as never)
+      .where(eq(schema.huntSources.id, id))
+      .returning()
+    return rows[0] ? mapHuntSource(rows[0]) : null
+  },
+  async deleteHuntSource(id) {
+    const d = requireDb()
+    await d.delete(schema.huntSources).where(eq(schema.huntSources.id, id))
+  },
+
+  async listHuntMissions() {
+    const d = requireDb()
+    const rows = await d.select().from(schema.huntMissions)
+    return rows.map(mapHuntMission).sort((a, b) => (a.createdAt < b.createdAt ? 1 : -1))
+  },
+  async getHuntMission(id) {
+    const d = requireDb()
+    const rows = await d.select().from(schema.huntMissions).where(eq(schema.huntMissions.id, id))
+    return rows[0] ? mapHuntMission(rows[0]) : null
+  },
+  async createHuntMission(input: HuntMissionInput) {
+    const d = requireDb()
+    const rows = await d.insert(schema.huntMissions).values(huntMissionValues(input) as never).returning()
+    return mapHuntMission(rows[0])
+  },
+  async updateHuntMission(id, input) {
+    const d = requireDb()
+    const rows = await d
+      .update(schema.huntMissions)
+      .set({ ...huntMissionValues(input), updatedAt: new Date() } as never)
+      .where(eq(schema.huntMissions.id, id))
+      .returning()
+    return rows[0] ? mapHuntMission(rows[0]) : null
+  },
+  async deleteHuntMission(id) {
+    const d = requireDb()
+    await d.delete(schema.huntMissions).where(eq(schema.huntMissions.id, id))
   },
 }
 

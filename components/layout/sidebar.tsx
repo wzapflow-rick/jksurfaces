@@ -12,6 +12,7 @@ const NAV = [
   { href: "/oportunidades", label: "Oportunidades", icon: Crosshair },
   { href: "/radar/cacar", label: "Caçar oportunidade", icon: Target },
   { href: "/radar", label: "Radar JK", icon: ScanSearch },
+  { href: "/caca", label: "Central de Caça", icon: Target },
   { href: "/configuracoes", label: "Configurações", icon: Settings },
 ]
 
@@ -66,7 +67,7 @@ export function Sidebar() {
 
       <div className="hidden border-t border-border p-4 md:block">
         <p className="text-[11px] leading-relaxed text-muted-foreground">
-          Fase 3 — Motor de caça de arbitragem. Sem integrações externas.
+          Fase 4 — Central de Caça. Motor de aquisição da JK.
         </p>
       </div>
     </aside>
