@@ -1,16 +1,20 @@
 import type {
   Buyer,
   BuyerProduct,
+  HuntMission,
+  HuntSource,
   Offer,
   PricingSettings,
   Product,
   RadarOpportunity,
 } from "@/types"
 import { SEED_PRODUCTS } from "@/lib/db/seed-data"
-import { DEFAULT_SETTINGS } from "./dto"
+import { DEFAULT_HUNT_SOURCES, DEFAULT_SETTINGS } from "./dto"
 import type {
   BuyerInput,
   BuyerProductInput,
+  HuntMissionInput,
+  HuntSourceInput,
   OfferInput,
   ProductInput,
   RadarOpportunityInput,
@@ -34,6 +38,8 @@ interface Store {
   buyerProducts: BuyerProduct[]
   offers: Offer[]
   radarOpportunities: RadarOpportunity[]
+  huntSources: HuntSource[]
+  huntMissions: HuntMission[]
   settings: PricingSettings
 }
 
@@ -67,6 +73,17 @@ function seedStore(): Store {
     buyerProducts: [],
     offers: [],
     radarOpportunities: [],
+    huntSources: DEFAULT_HUNT_SOURCES.map((s) => ({
+      id: crypto.randomUUID(),
+      name: s.name,
+      type: s.type,
+      urlBase: s.urlBase,
+      searchUrlTemplate: s.searchUrlTemplate,
+      active: true,
+      createdAt: now,
+      updatedAt: now,
+    })),
+    huntMissions: [],
     settings: { ...DEFAULT_SETTINGS, updatedAt: now },
   }
 }
@@ -75,6 +92,20 @@ const store: Store = globalForStore.__radarJkStore ?? seedStore()
 // Backfill de coleções adicionadas em fases posteriores, para que um store já
 // em cache (HMR/dev) não quebre ao acessar campos novos como radarOpportunities.
 store.radarOpportunities ??= []
+if (!store.huntSources || store.huntSources.length === 0) {
+  const now = nowIso()
+  store.huntSources = DEFAULT_HUNT_SOURCES.map((s) => ({
+    id: crypto.randomUUID(),
+    name: s.name,
+    type: s.type,
+    urlBase: s.urlBase,
+    searchUrlTemplate: s.searchUrlTemplate,
+    active: true,
+    createdAt: now,
+    updatedAt: now,
+  }))
+}
+store.huntMissions ??= []
 globalForStore.__radarJkStore = store
 
 export const memoryRepo: Repository = {
@@ -191,5 +222,55 @@ export const memoryRepo: Repository = {
   },
   async deleteRadarOpportunity(id) {
     store.radarOpportunities = store.radarOpportunities.filter((o) => o.id !== id)
+  },
+
+  async listHuntSources() {
+    return store.huntSources
+      .map((s) => ({ ...s }))
+      .sort((a, b) => a.name.localeCompare(b.name, "pt-BR"))
+  },
+  async getHuntSource(id) {
+    const found = store.huntSources.find((s) => s.id === id)
+    return found ? { ...found } : null
+  },
+  async createHuntSource(input: HuntSourceInput) {
+    const now = nowIso()
+    const source: HuntSource = { id: crypto.randomUUID(), ...input, createdAt: now, updatedAt: now }
+    store.huntSources.push(source)
+    return { ...source }
+  },
+  async updateHuntSource(id, input) {
+    const idx = store.huntSources.findIndex((s) => s.id === id)
+    if (idx === -1) return null
+    store.huntSources[idx] = { ...store.huntSources[idx], ...input, updatedAt: nowIso() }
+    return { ...store.huntSources[idx] }
+  },
+  async deleteHuntSource(id) {
+    store.huntSources = store.huntSources.filter((s) => s.id !== id)
+  },
+
+  async listHuntMissions() {
+    return store.huntMissions
+      .map((m) => ({ ...m }))
+      .sort((a, b) => (a.createdAt < b.createdAt ? 1 : -1))
+  },
+  async getHuntMission(id) {
+    const found = store.huntMissions.find((m) => m.id === id)
+    return found ? { ...found } : null
+  },
+  async createHuntMission(input: HuntMissionInput) {
+    const now = nowIso()
+    const mission: HuntMission = { id: crypto.randomUUID(), ...input, createdAt: now, updatedAt: now }
+    store.huntMissions.push(mission)
+    return { ...mission }
+  },
+  async updateHuntMission(id, input) {
+    const idx = store.huntMissions.findIndex((m) => m.id === id)
+    if (idx === -1) return null
+    store.huntMissions[idx] = { ...store.huntMissions[idx], ...input, updatedAt: nowIso() }
+    return { ...store.huntMissions[idx] }
+  },
+  async deleteHuntMission(id) {
+    store.huntMissions = store.huntMissions.filter((m) => m.id !== id)
   },
 }

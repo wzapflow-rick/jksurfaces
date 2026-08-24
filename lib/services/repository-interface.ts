@@ -1,6 +1,8 @@
 import type {
   Buyer,
   BuyerProduct,
+  HuntMission,
+  HuntSource,
   Offer,
   PricingSettings,
   Product,
@@ -9,6 +11,8 @@ import type {
 import type {
   BuyerInput,
   BuyerProductInput,
+  HuntMissionInput,
+  HuntSourceInput,
   OfferInput,
   ProductInput,
   RadarOpportunityInput,
@@ -54,4 +58,18 @@ export interface Repository {
     input: Partial<RadarOpportunityInput>,
   ): Promise<RadarOpportunity | null>
   deleteRadarOpportunity(id: string): Promise<void>
+
+  // Central de Caça (Fase 4) — fontes
+  listHuntSources(): Promise<HuntSource[]>
+  getHuntSource(id: string): Promise<HuntSource | null>
+  createHuntSource(input: HuntSourceInput): Promise<HuntSource>
+  updateHuntSource(id: string, input: Partial<HuntSourceInput>): Promise<HuntSource | null>
+  deleteHuntSource(id: string): Promise<void>
+
+  // Central de Caça (Fase 4) — missões
+  listHuntMissions(): Promise<HuntMission[]>
+  getHuntMission(id: string): Promise<HuntMission | null>
+  createHuntMission(input: HuntMissionInput): Promise<HuntMission>
+  updateHuntMission(id: string, input: Partial<HuntMissionInput>): Promise<HuntMission | null>
+  deleteHuntMission(id: string): Promise<void>
 }

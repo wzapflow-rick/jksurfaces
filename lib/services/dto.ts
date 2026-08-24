@@ -1,6 +1,9 @@
 import type {
   AcquisitionStatus,
   CommercialPriority,
+  HuntPriority,
+  HuntSourceType,
+  HuntStatus,
   RadarSource,
   RadarStatus,
 } from "@/types"
@@ -71,8 +74,45 @@ export interface RadarOpportunityInput {
   status: RadarStatus
 }
 
+export interface HuntSourceInput {
+  name: string
+  type: HuntSourceType
+  urlBase: string | null
+  searchUrlTemplate: string | null
+  active: boolean
+}
+
+export interface HuntMissionInput {
+  name: string
+  description: string | null
+  sku: string | null
+  searchTerm: string
+  brand: string | null
+  category: string | null
+  expectedSalePrice: number
+  sourceIds: string[]
+  priority: HuntPriority
+  status: HuntStatus
+  notes: string | null
+}
+
 export const DEFAULT_SETTINGS = {
   costPct: 62,
   marginPct: 30,
   taxPct: 8,
 }
+
+/**
+ * Fontes de caça padrão. Só têm template de busca as fontes cuja estrutura de
+ * pesquisa é pública e conhecida — nunca inventamos URLs. `{q}` é substituído
+ * pelo termo de busca já codificado.
+ */
+export const DEFAULT_HUNT_SOURCES: Omit<HuntSourceInput, "active">[] = [
+  { name: "OLX", type: "MARKETPLACE", urlBase: "https://www.olx.com.br", searchUrlTemplate: "https://www.olx.com.br/brasil?q={q}" },
+  { name: "Mercado Livre", type: "MARKETPLACE", urlBase: "https://www.mercadolivre.com.br", searchUrlTemplate: "https://lista.mercadolivre.com.br/{q}" },
+  { name: "Facebook Marketplace", type: "MARKETPLACE", urlBase: "https://www.facebook.com/marketplace", searchUrlTemplate: "https://www.facebook.com/marketplace/search/?query={q}" },
+  { name: "Shopee", type: "MARKETPLACE", urlBase: "https://shopee.com.br", searchUrlTemplate: "https://shopee.com.br/search?keyword={q}" },
+  { name: "Loja física", type: "LOJA_FISICA", urlBase: null, searchUrlTemplate: null },
+  { name: "Fornecedor", type: "FORNECEDOR", urlBase: null, searchUrlTemplate: null },
+  { name: "Outro", type: "OUTRO", urlBase: null, searchUrlTemplate: null },
+]

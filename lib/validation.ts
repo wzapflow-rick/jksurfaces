@@ -102,6 +102,61 @@ export const radarOpportunitySchema = z.object({
   status: radarStatus.default("ENCONTRADA"),
 })
 
+/* ---------------------------------------------------------------------------
+   CENTRAL DE CAÇA (Fase 4)
+   -------------------------------------------------------------------------- */
+
+const huntPriority = z.enum(["ALTA", "MEDIA", "BAIXA"])
+const huntStatus = z.enum(["ATIVA", "PAUSADA", "CONCLUIDA", "CANCELADA"])
+const huntSourceType = z.enum(["MARKETPLACE", "LOJA_FISICA", "FORNECEDOR", "OUTRO"])
+
+const optionalUrl = z
+  .string()
+  .trim()
+  .url("URL inválida")
+  .nullable()
+  .optional()
+  .or(z.literal(""))
+  .transform((v) => v || null)
+
+export const huntSourceSchema = z.object({
+  name: z.string().trim().min(1, "Nome obrigatório"),
+  type: huntSourceType.default("OUTRO"),
+  urlBase: optionalUrl,
+  searchUrlTemplate: z
+    .string()
+    .trim()
+    .nullable()
+    .optional()
+    .or(z.literal(""))
+    .transform((v) => v || null)
+    .refine((v) => v === null || v.includes("{q}"), {
+      message: "O template deve conter {q} onde entra o termo de busca.",
+    }),
+  active: z.boolean().default(true),
+})
+
+export const huntMissionSchema = z.object({
+  name: z.string().trim().min(1, "Nome da missão obrigatório"),
+  description: z.string().trim().nullable().optional().transform((v) => v || null),
+  sku: z.string().trim().nullable().optional().transform((v) => v || null),
+  searchTerm: z.string().trim().min(1, "Produto / termo de busca obrigatório"),
+  brand: z.string().trim().nullable().optional().transform((v) => v || null),
+  category: z.string().trim().nullable().optional().transform((v) => v || null),
+  expectedSalePrice: money,
+  sourceIds: z
+    .union([z.array(z.string()), z.string()])
+    .optional()
+    .transform((v) => {
+      if (!v) return [] as string[]
+      const arr = Array.isArray(v) ? v : [v]
+      return arr.map((s) => s.trim()).filter(Boolean)
+    }),
+  priority: huntPriority.default("MEDIA"),
+  status: huntStatus.default("ATIVA"),
+  notes: z.string().trim().nullable().optional().transform((v) => v || null),
+})
+
 export const settingsSchema = z
   .object({
     costPct: z.coerce.number().min(0).max(100),

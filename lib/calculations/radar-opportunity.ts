@@ -35,6 +35,62 @@ export const RADAR_RULE = {
 
 export type RadarRule = typeof RADAR_RULE
 
+/**
+ * Margem-alvo (sobre o preço de venda) usada para calcular o PREÇO RECOMENDADO
+ * de aquisição de uma missão de caça (Fase 4). O preço máximo é o ponto de
+ * equilíbrio (resultado zero); o recomendado deixa esta folga de lucro.
+ *
+ * Mantido aqui, junto do motor financeiro, para NÃO duplicar a fórmula em outro
+ * lugar. Ajustar em um único ponto no futuro.
+ */
+export const RECOMMENDED_MARGIN_PCT = 10
+
+/** Alvos de aquisição de uma missão de caça, derivados do preço de venda. */
+export interface AcquisitionTargets {
+  /** Preço máximo de aquisição = ponto de equilíbrio (resultado zero). */
+  maxAcquisition: number
+  /** Preço recomendado de aquisição = deixa a margem-alvo de lucro. */
+  recommendedAcquisition: number
+  /** Resultado estimado se comprar exatamente no preço recomendado. */
+  recommendedResult: number
+  /** Folga entre o preço máximo e o recomendado. */
+  buffer: number
+  /** Margem-alvo aplicada (fração do preço de venda). */
+  targetMarginPct: number
+}
+
+/**
+ * Motor de cálculo reverso (Fase 3/4): a partir do PREÇO DE VENDA, calcula até
+ * quanto a JK pode pagar por um item.
+ *
+ *   preço máximo (equilíbrio) = venda × (1 − 30% − 8%)
+ *   preço recomendado         = venda × (1 − 30% − 8% − margemAlvo)
+ *
+ * Usa exatamente os mesmos percentuais do RADAR_RULE, então é consistente com
+ * `computeRadarMetrics`: comprar no preço máximo zera o resultado e comprar no
+ * recomendado entrega a margem-alvo.
+ */
+export function computeAcquisitionTargets(
+  salePrice: number,
+  rule: RadarRule = RADAR_RULE,
+  recommendedMarginPct: number = RECOMMENDED_MARGIN_PCT,
+): AcquisitionTargets {
+  const overheadPct = (rule.operationalPct + rule.taxPct) / 100
+  const targetMarginPct = recommendedMarginPct / 100
+
+  const safeSale = salePrice > 0 ? salePrice : 0
+  const maxAcquisition = round2(safeSale * (1 - overheadPct))
+  const recommendedAcquisition = round2(safeSale * (1 - overheadPct - targetMarginPct))
+
+  return {
+    maxAcquisition: Math.max(0, maxAcquisition),
+    recommendedAcquisition: Math.max(0, recommendedAcquisition),
+    recommendedResult: round2(safeSale * targetMarginPct),
+    buffer: round2(Math.max(0, maxAcquisition - recommendedAcquisition)),
+    targetMarginPct,
+  }
+}
+
 /** Custo total de aquisição = preço anunciado + frete + outros custos. */
 export function calcAcquisitionCost(params: {
   announcedPrice: number
