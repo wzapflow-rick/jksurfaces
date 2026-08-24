@@ -8,7 +8,7 @@ import { HuntMissionsSection } from "@/components/dashboard/hunt-missions-sectio
 import { StatusBadge } from "@/components/ui/status-badge"
 import { formatBRL } from "@/lib/utils"
 import Link from "next/link"
-import { AlertTriangle } from "lucide-react"
+import { AlertTriangle, Target } from "lucide-react"
 
 export const dynamic = "force-dynamic"
 
@@ -20,6 +20,15 @@ export default async function DashboardPage() {
       <PageHeader
         title="Radar JK"
         subtitle="Inteligência de aquisição — o que caçar hoje, dentro da regra financeira da JK."
+        actions={
+          <Link
+            href="/radar/cacar"
+            className="inline-flex items-center gap-1.5 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
+          >
+            <Target className="h-4 w-4" />
+            Caçar oportunidade
+          </Link>
+        }
       />
 
       <DbBanner />

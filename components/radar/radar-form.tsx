@@ -5,6 +5,8 @@ import { useRouter } from "next/navigation"
 import { Field, Input, Select, Textarea } from "@/components/ui/field"
 import { Button } from "@/components/ui/button"
 import { RadarClassificationBadge } from "./radar-classification-badge"
+import { RadarRecommendationBadge } from "./radar-recommendation-badge"
+import { RadarPriceLadder } from "./radar-price-ladder"
 import {
   createRadarOpportunityAction,
   updateRadarOpportunityAction,
@@ -51,10 +53,13 @@ function toDateInput(iso?: string): string {
 export function RadarForm({
   opportunity,
   prefill,
+  variant = "default",
 }: {
   opportunity?: RadarOpportunity
   prefill?: RadarPrefill
+  variant?: "default" | "hunt"
 }) {
+  const isHunt = variant === "hunt"
   const router = useRouter()
   const [pending, startTransition] = useTransition()
   const [result, setResult] = useState<ActionResult | null>(null)
@@ -148,9 +153,10 @@ export function RadarForm({
           <h2 className="mb-4 text-sm font-semibold tracking-tight">Custos e preço</h2>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <Field
-              label="Preço anunciado (R$)"
+              label={isHunt ? "Preço encontrado / aquisição (R$)" : "Preço anunciado (R$)"}
               htmlFor="announcedPrice"
               error={fieldError("announcedPrice")}
+              hint={isHunt ? "Quanto o vendedor está pedindo pelo produto." : undefined}
             >
               <Input
                 id="announcedPrice"
@@ -267,14 +273,27 @@ export function RadarForm({
 
       <aside className="flex flex-col gap-4">
         <div className="sticky top-6 flex flex-col gap-4 rounded-xl border border-border bg-card p-5">
-          <h2 className="text-sm font-semibold tracking-tight">Análise da oportunidade</h2>
+          <h2 className="text-sm font-semibold tracking-tight">
+            {isHunt ? "Vale a pena caçar?" : "Análise da oportunidade"}
+          </h2>
           <p className="text-[11px] leading-relaxed text-muted-foreground">
             Regra JK: {RADAR_RULE.operationalPct}% custos/serviços · {RADAR_RULE.taxPct}% notas/impostos sobre o preço de venda.
           </p>
 
-          <div className="flex items-center justify-between gap-3 rounded-lg border border-border-strong bg-surface-2 px-4 py-3">
-            <span className="text-xs text-muted-foreground">Indicador</span>
+          {/* Recomendação de caça em destaque */}
+          <div className="flex flex-col items-center gap-2 rounded-lg border border-border-strong bg-surface-2 px-4 py-4">
+            <RadarRecommendationBadge recommendation={metrics.recommendation} />
             <RadarClassificationBadge classification={metrics.classification} />
+          </div>
+
+          {/* Comparação de preços da caça */}
+          <div className="rounded-lg border border-border-strong bg-surface-2 p-4">
+            <RadarPriceLadder
+              foundPrice={announcedPrice}
+              recommendedPrice={metrics.recommendedPurchasePrice}
+              maxPrice={metrics.maxPurchasePrice}
+              recommendation={metrics.recommendation}
+            />
           </div>
 
           <div className="flex flex-col gap-3 text-sm">
@@ -304,7 +323,13 @@ export function RadarForm({
 
           <div className="flex flex-col gap-2">
             <Button type="submit" disabled={pending}>
-              {pending ? "Salvando…" : opportunity ? "Salvar alterações" : "Cadastrar oportunidade"}
+              {pending
+                ? "Salvando…"
+                : opportunity
+                  ? "Salvar alterações"
+                  : isHunt
+                    ? "Salvar caça"
+                    : "Cadastrar oportunidade"}
             </Button>
             <Button type="button" variant="ghost" onClick={() => router.back()} disabled={pending}>
               Cancelar

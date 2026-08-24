@@ -10,6 +10,7 @@ const NAV = [
   { href: "/produtos", label: "Produtos", icon: Package },
   { href: "/compradores", label: "Compradores", icon: Users },
   { href: "/oportunidades", label: "Oportunidades", icon: Crosshair },
+  { href: "/radar/cacar", label: "Caçar oportunidade", icon: Target },
   { href: "/radar", label: "Radar JK", icon: ScanSearch },
   { href: "/caca", label: "Central de Caça", icon: Target },
   { href: "/configuracoes", label: "Configurações", icon: Settings },
@@ -31,8 +32,18 @@ export function Sidebar() {
       </div>
 
       <nav className="flex flex-1 flex-col gap-1 p-2 md:p-3">
-        {NAV.map((item) => {
-          const active = item.href === "/" ? pathname === "/" : pathname.startsWith(item.href)
+        {(() => {
+          // Item ativo = prefixo mais específico que casa com a rota atual.
+          // Evita que /radar e /radar/cacar fiquem ativos ao mesmo tempo.
+          const activeHref = NAV.reduce<string | null>((best, item) => {
+            const matches =
+              item.href === "/" ? pathname === "/" : pathname.startsWith(item.href)
+            if (!matches) return best
+            if (!best || item.href.length > best.length) return item.href
+            return best
+          }, null)
+          return NAV.map((item) => {
+          const active = item.href === activeHref
           const Icon = item.icon
           return (
             <Link
@@ -50,7 +61,8 @@ export function Sidebar() {
               <span className="hidden md:inline">{item.label}</span>
             </Link>
           )
-        })}
+          })
+        })()}
       </nav>
 
       <div className="hidden border-t border-border p-4 md:block">

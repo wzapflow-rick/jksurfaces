@@ -5,6 +5,8 @@ import { getRadarOpportunityWithMetrics } from "@/lib/services/radar-service"
 import { PageHeader } from "@/components/layout/page-header"
 import { Button } from "@/components/ui/button"
 import { RadarClassificationBadge } from "@/components/radar/radar-classification-badge"
+import { RadarRecommendationBadge } from "@/components/radar/radar-recommendation-badge"
+import { RadarPriceLadder } from "@/components/radar/radar-price-ladder"
 import { RadarStatusControl } from "@/components/radar/radar-status-control"
 import { RadarDeleteButton } from "@/components/radar/radar-delete-button"
 import { RADAR_RULE } from "@/lib/calculations/radar-opportunity"
@@ -64,6 +66,7 @@ export default async function OportunidadeDetailPage({
       />
 
       <div className="flex flex-wrap items-center gap-3">
+        <RadarRecommendationBadge recommendation={m.recommendation} size="sm" />
         <RadarClassificationBadge classification={m.classification} />
         <span className="tabular rounded-md border border-border-strong bg-surface-2 px-2.5 py-1 text-xs text-muted-foreground">
           Encontrada em {formatDate(opportunity.opportunityDate)}
@@ -103,7 +106,27 @@ export default async function OportunidadeDetailPage({
         />
         <MetricCard label="Margem sobre venda" value={formatPercent(m.marginPct)} />
         <MetricCard label="ROI sobre aquisição" value={formatPercent(m.roi)} />
+        <MetricCard
+          label="Preço recomendado de compra"
+          value={formatBRL(Math.max(m.recommendedPurchasePrice, 0))}
+          hint="Reserva a margem-alvo da caça"
+        />
+        <MetricCard
+          label="Preço máximo de aquisição"
+          value={formatBRL(Math.max(m.maxPurchasePrice, 0))}
+          hint="Limite para o resultado não ficar negativo"
+        />
       </div>
+
+      <section className="rounded-xl border border-border bg-card p-5">
+        <h2 className="mb-4 text-sm font-semibold tracking-tight">Faixa de compra da caça</h2>
+        <RadarPriceLadder
+          foundPrice={opportunity.announcedPrice}
+          recommendedPrice={m.recommendedPurchasePrice}
+          maxPrice={m.maxPurchasePrice}
+          recommendation={m.recommendation}
+        />
+      </section>
 
       <section className="rounded-xl border border-border bg-card p-5">
         <h2 className="mb-4 text-sm font-semibold tracking-tight">Composição do preço de venda</h2>

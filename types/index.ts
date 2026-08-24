@@ -122,6 +122,12 @@ export type RadarStatus =
 /** Classificação visual do quão boa é a oportunidade. */
 export type RadarClassification = "EXCELENTE" | "BOA" | "AVALIAR" | "NAO_VALE"
 
+/**
+ * Recomendação de caça (Fase 3): resultado da comparação entre o preço
+ * encontrado e os limites de compra (recomendado / máximo).
+ */
+export type RadarRecommendation = "CACAR" | "AVALIAR" | "NAO_VALE"
+
 export interface RadarOpportunity {
   id: string
   sku: string | null
@@ -159,6 +165,22 @@ export interface RadarMetrics {
   /** Retorno sobre o capital investido (resultado / aquisição). */
   roi: number
   classification: RadarClassification
+
+  /* ---- Calculadora reversa / caça (Fase 3) ---- */
+  /** Valor restante do preço de venda após deduzir os 38% (30% + 8%). */
+  netAfterDeductions: number
+  /**
+   * Preço MÁXIMO que a JK pode pagar PELO PRODUTO (fora frete/outros) para o
+   * resultado ainda ficar em zero, dado o frete e outros custos informados.
+   */
+  maxPurchasePrice: number
+  /**
+   * Preço RECOMENDADO de compra: mais conservador que o máximo, reservando uma
+   * margem-alvo de resultado para a caça valer a pena.
+   */
+  recommendedPurchasePrice: number
+  /** Recomendação de caça a partir do preço encontrado vs. limites. */
+  recommendation: RadarRecommendation
 }
 
 export type RadarOpportunityWithMetrics = RadarOpportunity & { metrics: RadarMetrics }

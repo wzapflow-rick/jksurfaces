@@ -7,6 +7,7 @@ import type {
   HuntSourceType,
   HuntStatus,
   RadarClassification,
+  RadarRecommendation,
   RadarSource,
   RadarStatus,
 } from "@/types"
@@ -200,4 +201,35 @@ export function huntSourceToRadarSource(name: string): RadarSource {
     return "MARKETPLACE"
   }
   return "OUTRO"
+}
+
+/* ---------------------------------------------------------------------------
+   RADAR JK (Fase 3) — recomendação de caça
+   -------------------------------------------------------------------------- */
+
+export const RADAR_RECOMMENDATION_META: Record<
+  RadarRecommendation,
+  { label: string; short: string; tone: string; dot: string; hint: string }
+> = {
+  CACAR: {
+    label: "Caçar agora",
+    short: "CAÇAR",
+    tone: "border-status-go/40 bg-status-go/10 text-status-go",
+    dot: "bg-status-go",
+    hint: "Preço encontrado dentro da faixa recomendada.",
+  },
+  AVALIAR: {
+    label: "Avaliar",
+    short: "AVALIAR",
+    tone: "border-status-hot/40 bg-status-hot/10 text-status-hot",
+    dot: "bg-status-hot",
+    hint: "Acima do recomendado, mas ainda dentro do limite máximo.",
+  },
+  NAO_VALE: {
+    label: "Não vale a pena",
+    short: "NÃO VALE",
+    tone: "border-status-stop/40 bg-status-stop/10 text-status-stop",
+    dot: "bg-status-stop",
+    hint: "Preço encontrado acima do máximo que a JK pode pagar.",
+  },
 }
