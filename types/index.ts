@@ -100,3 +100,65 @@ export interface OfferWithMetrics extends Offer {
     slack: number
   }
 }
+
+/* =============================================================================
+   RADAR JK — Fase 2
+   Oportunidades de compra registradas manualmente (OLX, Mercado Livre, Chatuba,
+   marketplaces). Entidade independente dos produtos/ofertas da Fase 1.
+   ============================================================================= */
+
+/** Fonte de onde a oportunidade foi encontrada. */
+export type RadarSource = "OLX" | "MERCADO_LIVRE" | "CHATUBA" | "MARKETPLACE" | "OUTRO"
+
+/** Estágio da oportunidade no fluxo de compra/revenda. */
+export type RadarStatus =
+  | "ENCONTRADA"
+  | "EM_ANALISE"
+  | "APROVADA"
+  | "COMPRADA"
+  | "VENDIDA"
+  | "DESCARTADA"
+
+/** Classificação visual do quão boa é a oportunidade. */
+export type RadarClassification = "EXCELENTE" | "BOA" | "AVALIAR" | "NAO_VALE"
+
+export interface RadarOpportunity {
+  id: string
+  sku: string | null
+  name: string
+  brand: string | null
+  source: RadarSource
+  url: string | null
+  /** Preço anunciado (unitário) na fonte. */
+  announcedPrice: number
+  availableQty: number | null
+  shipping: number
+  otherCosts: number
+  /** Preço de venda praticado pela JK. */
+  salePrice: number
+  /** Data em que a oportunidade foi encontrada (ISO). */
+  opportunityDate: string
+  notes: string | null
+  status: RadarStatus
+  createdAt: string
+  updatedAt: string
+}
+
+/** Métricas derivadas de uma oportunidade do Radar. */
+export interface RadarMetrics {
+  /** Custo total de aquisição = preço anunciado + frete + outros custos. */
+  acquisitionCost: number
+  /** Valor dos 30% (custos/serviços da operação) sobre o preço de venda. */
+  operationalCost: number
+  /** Valor dos 8% (notas/impostos) sobre o preço de venda. */
+  taxCost: number
+  /** Resultado estimado = venda − aquisição − 30% − 8%. */
+  estimatedResult: number
+  /** Margem sobre o preço de venda (resultado / venda). */
+  marginPct: number
+  /** Retorno sobre o capital investido (resultado / aquisição). */
+  roi: number
+  classification: RadarClassification
+}
+
+export type RadarOpportunityWithMetrics = RadarOpportunity & { metrics: RadarMetrics }

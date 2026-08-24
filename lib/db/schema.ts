@@ -108,6 +108,31 @@ export const scans = pgTable("scans", {
   finishedAt: timestamp("finished_at", { withTimezone: true }),
 })
 
+/**
+ * RADAR JK — Fase 2.
+ * Oportunidades de compra registradas manualmente. Entidade independente,
+ * com dados do anúncio (SKU, nome, marca, fonte) copiados no momento do
+ * cadastro — não referencia `products` para não acoplar as fases.
+ */
+export const radarOpportunities = pgTable("radar_opportunities", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  sku: text("sku"),
+  name: text("name").notNull(),
+  brand: text("brand"),
+  source: text("source").notNull().default("OUTRO"),
+  url: text("url"),
+  announcedPrice: numeric("announced_price", { precision: 12, scale: 2 }).notNull(),
+  availableQty: integer("available_qty"),
+  shipping: numeric("shipping", { precision: 12, scale: 2 }).notNull().default("0"),
+  otherCosts: numeric("other_costs", { precision: 12, scale: 2 }).notNull().default("0"),
+  salePrice: numeric("sale_price", { precision: 12, scale: 2 }).notNull(),
+  opportunityDate: timestamp("opportunity_date", { withTimezone: true }).notNull().defaultNow(),
+  notes: text("notes"),
+  status: text("status").notNull().default("ENCONTRADA"),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+})
+
 export const settings = pgTable("settings", {
   id: text("id").primaryKey().default("default"),
   costPct: numeric("cost_pct", { precision: 5, scale: 2 }).notNull().default("62"),

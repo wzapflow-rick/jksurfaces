@@ -1,4 +1,11 @@
-import type { Buyer, BuyerProduct, Offer, PricingSettings, Product } from "@/types"
+import type {
+  Buyer,
+  BuyerProduct,
+  Offer,
+  PricingSettings,
+  Product,
+  RadarOpportunity,
+} from "@/types"
 import { SEED_PRODUCTS } from "@/lib/db/seed-data"
 import { DEFAULT_SETTINGS } from "./dto"
 import type {
@@ -6,6 +13,7 @@ import type {
   BuyerProductInput,
   OfferInput,
   ProductInput,
+  RadarOpportunityInput,
   SettingsInput,
 } from "./dto"
 import type { Repository } from "./repository-interface"
@@ -25,6 +33,7 @@ interface Store {
   buyers: Buyer[]
   buyerProducts: BuyerProduct[]
   offers: Offer[]
+  radarOpportunities: RadarOpportunity[]
   settings: PricingSettings
 }
 
@@ -57,6 +66,7 @@ function seedStore(): Store {
     buyers: [],
     buyerProducts: [],
     offers: [],
+    radarOpportunities: [],
     settings: { ...DEFAULT_SETTINGS, updatedAt: now },
   }
 }
@@ -144,5 +154,39 @@ export const memoryRepo: Repository = {
   },
   async deleteOffer(id) {
     store.offers = store.offers.filter((o) => o.id !== id)
+  },
+
+  async listRadarOpportunities() {
+    return store.radarOpportunities
+      .map((o) => ({ ...o }))
+      .sort((a, b) => (a.opportunityDate < b.opportunityDate ? 1 : -1))
+  },
+  async getRadarOpportunity(id) {
+    const found = store.radarOpportunities.find((o) => o.id === id)
+    return found ? { ...found } : null
+  },
+  async createRadarOpportunity(input: RadarOpportunityInput) {
+    const now = nowIso()
+    const opportunity: RadarOpportunity = {
+      id: crypto.randomUUID(),
+      ...input,
+      createdAt: now,
+      updatedAt: now,
+    }
+    store.radarOpportunities.push(opportunity)
+    return { ...opportunity }
+  },
+  async updateRadarOpportunity(id, input) {
+    const idx = store.radarOpportunities.findIndex((o) => o.id === id)
+    if (idx === -1) return null
+    store.radarOpportunities[idx] = {
+      ...store.radarOpportunities[idx],
+      ...input,
+      updatedAt: nowIso(),
+    }
+    return { ...store.radarOpportunities[idx] }
+  },
+  async deleteRadarOpportunity(id) {
+    store.radarOpportunities = store.radarOpportunities.filter((o) => o.id !== id)
   },
 }

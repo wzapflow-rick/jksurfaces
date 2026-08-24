@@ -1,6 +1,12 @@
 import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
-import type { AcquisitionStatus, CommercialPriority } from "@/types"
+import type {
+  AcquisitionStatus,
+  CommercialPriority,
+  RadarClassification,
+  RadarSource,
+  RadarStatus,
+} from "@/types"
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -66,4 +72,51 @@ export const PRIORITY_META: Record<CommercialPriority, { label: string }> = {
   HIGH: { label: "Alta" },
   NORMAL: { label: "Normal" },
   LOW: { label: "Baixa" },
+}
+
+/* ---------------------------------------------------------------------------
+   RADAR JK (Fase 2) — metadados de exibição
+   -------------------------------------------------------------------------- */
+
+export const RADAR_CLASSIFICATION_META: Record<
+  RadarClassification,
+  { label: string; tone: string; dot: string }
+> = {
+  EXCELENTE: {
+    label: "Oportunidade excelente",
+    tone: "border-status-go/30 bg-status-go/10 text-status-go",
+    dot: "bg-status-go",
+  },
+  BOA: {
+    label: "Oportunidade boa",
+    tone: "border-status-watch/30 bg-status-watch/10 text-status-watch",
+    dot: "bg-status-watch",
+  },
+  AVALIAR: {
+    label: "Avaliar",
+    tone: "border-status-hot/30 bg-status-hot/10 text-status-hot",
+    dot: "bg-status-hot",
+  },
+  NAO_VALE: {
+    label: "Não vale a pena",
+    tone: "border-status-stop/30 bg-status-stop/10 text-status-stop",
+    dot: "bg-status-stop",
+  },
+}
+
+export const RADAR_STATUS_META: Record<RadarStatus, { label: string; tone: string }> = {
+  ENCONTRADA: { label: "Encontrada", tone: "border-border-strong bg-muted text-muted-foreground" },
+  EM_ANALISE: { label: "Em análise", tone: "border-status-watch/30 bg-status-watch/10 text-status-watch" },
+  APROVADA: { label: "Aprovada para compra", tone: "border-primary/30 bg-primary/10 text-primary" },
+  COMPRADA: { label: "Comprada", tone: "border-status-hot/30 bg-status-hot/10 text-status-hot" },
+  VENDIDA: { label: "Vendida", tone: "border-status-go/30 bg-status-go/10 text-status-go" },
+  DESCARTADA: { label: "Descartada", tone: "border-status-stop/30 bg-status-stop/10 text-status-stop" },
+}
+
+export const RADAR_SOURCE_META: Record<RadarSource, { label: string }> = {
+  OLX: { label: "OLX" },
+  MERCADO_LIVRE: { label: "Mercado Livre" },
+  CHATUBA: { label: "Chatuba" },
+  MARKETPLACE: { label: "Marketplace" },
+  OUTRO: { label: "Outro" },
 }

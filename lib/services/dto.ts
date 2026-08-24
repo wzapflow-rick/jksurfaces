@@ -1,4 +1,9 @@
-import type { AcquisitionStatus, CommercialPriority } from "@/types"
+import type {
+  AcquisitionStatus,
+  CommercialPriority,
+  RadarSource,
+  RadarStatus,
+} from "@/types"
 
 export interface ProductInput {
   sku: string
@@ -48,6 +53,22 @@ export interface SettingsInput {
   costPct: number
   marginPct: number
   taxPct: number
+}
+
+export interface RadarOpportunityInput {
+  sku: string | null
+  name: string
+  brand: string | null
+  source: RadarSource
+  url: string | null
+  announcedPrice: number
+  availableQty: number | null
+  shipping: number
+  otherCosts: number
+  salePrice: number
+  opportunityDate: string
+  notes: string | null
+  status: RadarStatus
 }
 
 export const DEFAULT_SETTINGS = {

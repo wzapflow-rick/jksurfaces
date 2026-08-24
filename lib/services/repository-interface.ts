@@ -1,9 +1,17 @@
-import type { Buyer, BuyerProduct, Offer, PricingSettings, Product } from "@/types"
+import type {
+  Buyer,
+  BuyerProduct,
+  Offer,
+  PricingSettings,
+  Product,
+  RadarOpportunity,
+} from "@/types"
 import type {
   BuyerInput,
   BuyerProductInput,
   OfferInput,
   ProductInput,
+  RadarOpportunityInput,
   SettingsInput,
 } from "./dto"
 
@@ -36,4 +44,14 @@ export interface Repository {
   listOffers(): Promise<Offer[]>
   createOffer(input: OfferInput): Promise<Offer>
   deleteOffer(id: string): Promise<void>
+
+  // Radar JK (Fase 2)
+  listRadarOpportunities(): Promise<RadarOpportunity[]>
+  getRadarOpportunity(id: string): Promise<RadarOpportunity | null>
+  createRadarOpportunity(input: RadarOpportunityInput): Promise<RadarOpportunity>
+  updateRadarOpportunity(
+    id: string,
+    input: Partial<RadarOpportunityInput>,
+  ): Promise<RadarOpportunity | null>
+  deleteRadarOpportunity(id: string): Promise<void>
 }

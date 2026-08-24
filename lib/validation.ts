@@ -65,6 +65,43 @@ export const offerSchema = z.object({
   notes: z.string().trim().nullable().optional().transform((v) => v || null),
 })
 
+const radarSource = z.enum(["OLX", "MERCADO_LIVRE", "CHATUBA", "MARKETPLACE", "OUTRO"])
+const radarStatus = z.enum([
+  "ENCONTRADA",
+  "EM_ANALISE",
+  "APROVADA",
+  "COMPRADA",
+  "VENDIDA",
+  "DESCARTADA",
+])
+
+export const radarOpportunitySchema = z.object({
+  sku: z.string().trim().nullable().optional().transform((v) => v || null),
+  name: z.string().trim().min(1, "Nome do produto obrigatório"),
+  brand: z.string().trim().nullable().optional().transform((v) => v || null),
+  source: radarSource.default("OUTRO"),
+  url: z
+    .string()
+    .trim()
+    .url("URL inválida")
+    .nullable()
+    .optional()
+    .or(z.literal(""))
+    .transform((v) => v || null),
+  announcedPrice: money,
+  availableQty: optionalNumber.optional().transform((v) => v ?? null),
+  shipping: money.default(0),
+  otherCosts: money.default(0),
+  salePrice: money,
+  opportunityDate: z
+    .string()
+    .trim()
+    .min(1, "Data obrigatória")
+    .transform((v) => new Date(v).toISOString()),
+  notes: z.string().trim().nullable().optional().transform((v) => v || null),
+  status: radarStatus.default("ENCONTRADA"),
+})
+
 export const settingsSchema = z
   .object({
     costPct: z.coerce.number().min(0).max(100),

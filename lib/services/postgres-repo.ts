@@ -7,6 +7,9 @@ import type {
   Offer,
   PricingSettings,
   Product,
+  RadarOpportunity,
+  RadarSource,
+  RadarStatus,
 } from "@/types"
 import { db, schema } from "@/lib/db/client"
 import { DEFAULT_SETTINGS } from "./dto"
@@ -15,6 +18,7 @@ import type {
   BuyerProductInput,
   OfferInput,
   ProductInput,
+  RadarOpportunityInput,
   SettingsInput,
 } from "./dto"
 import type { Repository } from "./repository-interface"
@@ -40,6 +44,7 @@ type ProductRow = typeof schema.products.$inferSelect
 type BuyerRow = typeof schema.buyers.$inferSelect
 type BuyerProductRow = typeof schema.buyerProducts.$inferSelect
 type OfferRow = typeof schema.offers.$inferSelect
+type RadarRow = typeof schema.radarOpportunities.$inferSelect
 
 function mapProduct(row: ProductRow): Product {
   return {
@@ -101,6 +106,45 @@ function mapOffer(row: OfferRow): Offer {
     notes: row.notes,
     createdAt: iso(row.createdAt),
   }
+}
+
+function mapRadar(row: RadarRow): RadarOpportunity {
+  return {
+    id: row.id,
+    sku: row.sku,
+    name: row.name,
+    brand: row.brand,
+    source: row.source as RadarSource,
+    url: row.url,
+    announcedPrice: num(row.announcedPrice) ?? 0,
+    availableQty: row.availableQty,
+    shipping: num(row.shipping) ?? 0,
+    otherCosts: num(row.otherCosts) ?? 0,
+    salePrice: num(row.salePrice) ?? 0,
+    opportunityDate: iso(row.opportunityDate),
+    notes: row.notes,
+    status: row.status as RadarStatus,
+    createdAt: iso(row.createdAt),
+    updatedAt: iso(row.updatedAt),
+  }
+}
+
+function radarValues(input: Partial<RadarOpportunityInput>) {
+  const values: Record<string, unknown> = {}
+  if (input.sku !== undefined) values.sku = input.sku
+  if (input.name !== undefined) values.name = input.name
+  if (input.brand !== undefined) values.brand = input.brand
+  if (input.source !== undefined) values.source = input.source
+  if (input.url !== undefined) values.url = input.url
+  if (input.announcedPrice !== undefined) values.announcedPrice = String(input.announcedPrice)
+  if (input.availableQty !== undefined) values.availableQty = input.availableQty
+  if (input.shipping !== undefined) values.shipping = String(input.shipping)
+  if (input.otherCosts !== undefined) values.otherCosts = String(input.otherCosts)
+  if (input.salePrice !== undefined) values.salePrice = String(input.salePrice)
+  if (input.opportunityDate !== undefined) values.opportunityDate = new Date(input.opportunityDate)
+  if (input.notes !== undefined) values.notes = input.notes
+  if (input.status !== undefined) values.status = input.status
+  return values
 }
 
 function requireDb() {
@@ -273,6 +317,43 @@ export const postgresRepo: Repository = {
   async deleteOffer(id) {
     const d = requireDb()
     await d.delete(schema.offers).where(eq(schema.offers.id, id))
+  },
+
+  async listRadarOpportunities() {
+    const d = requireDb()
+    const rows = await d.select().from(schema.radarOpportunities)
+    return rows
+      .map(mapRadar)
+      .sort((a, b) => (a.opportunityDate < b.opportunityDate ? 1 : -1))
+  },
+  async getRadarOpportunity(id) {
+    const d = requireDb()
+    const rows = await d
+      .select()
+      .from(schema.radarOpportunities)
+      .where(eq(schema.radarOpportunities.id, id))
+    return rows[0] ? mapRadar(rows[0]) : null
+  },
+  async createRadarOpportunity(input: RadarOpportunityInput) {
+    const d = requireDb()
+    const rows = await d
+      .insert(schema.radarOpportunities)
+      .values(radarValues(input) as never)
+      .returning()
+    return mapRadar(rows[0])
+  },
+  async updateRadarOpportunity(id, input) {
+    const d = requireDb()
+    const rows = await d
+      .update(schema.radarOpportunities)
+      .set({ ...radarValues(input), updatedAt: new Date() } as never)
+      .where(eq(schema.radarOpportunities.id, id))
+      .returning()
+    return rows[0] ? mapRadar(rows[0]) : null
+  },
+  async deleteRadarOpportunity(id) {
+    const d = requireDb()
+    await d.delete(schema.radarOpportunities).where(eq(schema.radarOpportunities.id, id))
   },
 }
 

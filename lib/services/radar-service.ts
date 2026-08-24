@@ -1,5 +1,10 @@
 import "server-only"
-import type { AcquisitionStatus, OfferWithMetrics, ProductWithMetrics } from "@/types"
+import type {
+  AcquisitionStatus,
+  OfferWithMetrics,
+  ProductWithMetrics,
+  RadarOpportunityWithMetrics,
+} from "@/types"
 import {
   calcMaxCost,
   calcResult,
@@ -9,6 +14,7 @@ import {
   calcStatus,
   computeProductMetrics,
 } from "@/lib/calculations/pricing"
+import { computeRadarMetrics } from "@/lib/calculations/radar-opportunity"
 import { repo } from "./repository"
 
 /** Produtos com metricas derivadas, ordenados por score (desc). */
@@ -64,6 +70,26 @@ export async function getOffersWithMetrics(): Promise<OfferWithMetrics[]> {
     })
   }
   return result.sort((a, b) => b.metrics.score - a.metrics.score)
+}
+
+/* =============================================================================
+   RADAR JK (Fase 2) — oportunidades de compra com métricas calculadas.
+   ============================================================================= */
+
+export async function getRadarOpportunitiesWithMetrics(): Promise<RadarOpportunityWithMetrics[]> {
+  const opportunities = await repo.listRadarOpportunities()
+  return opportunities.map((opportunity) => ({
+    ...opportunity,
+    metrics: computeRadarMetrics(opportunity),
+  }))
+}
+
+export async function getRadarOpportunityWithMetrics(
+  id: string,
+): Promise<RadarOpportunityWithMetrics | null> {
+  const opportunity = await repo.getRadarOpportunity(id)
+  if (!opportunity) return null
+  return { ...opportunity, metrics: computeRadarMetrics(opportunity) }
 }
 
 export interface DashboardData {
