@@ -12,7 +12,17 @@ import {
 import type { ActionResult } from "@/app/actions/products"
 import { computeRadarMetrics, RADAR_RULE } from "@/lib/calculations/radar-opportunity"
 import { formatBRL, formatPercent } from "@/lib/utils"
-import type { RadarOpportunity } from "@/types"
+import type { RadarOpportunity, RadarSource } from "@/types"
+
+/** Valores iniciais vindos de uma missão de caça (Fase 4) via "Encontrei". */
+export interface RadarPrefill {
+  name?: string
+  sku?: string
+  brand?: string
+  source?: RadarSource
+  salePrice?: number
+  missionId?: string
+}
 
 const SOURCES: { value: string; label: string }[] = [
   { value: "OLX", label: "OLX" },
@@ -38,7 +48,13 @@ function toDateInput(iso?: string): string {
   return date.toISOString().slice(0, 10)
 }
 
-export function RadarForm({ opportunity }: { opportunity?: RadarOpportunity }) {
+export function RadarForm({
+  opportunity,
+  prefill,
+}: {
+  opportunity?: RadarOpportunity
+  prefill?: RadarPrefill
+}) {
   const router = useRouter()
   const [pending, startTransition] = useTransition()
   const [result, setResult] = useState<ActionResult | null>(null)
@@ -47,7 +63,7 @@ export function RadarForm({ opportunity }: { opportunity?: RadarOpportunity }) {
   const [announcedPrice, setAnnouncedPrice] = useState(opportunity?.announcedPrice ?? 0)
   const [shipping, setShipping] = useState(opportunity?.shipping ?? 0)
   const [otherCosts, setOtherCosts] = useState(opportunity?.otherCosts ?? 0)
-  const [salePrice, setSalePrice] = useState(opportunity?.salePrice ?? 0)
+  const [salePrice, setSalePrice] = useState(opportunity?.salePrice ?? prefill?.salePrice ?? 0)
 
   const metrics = computeRadarMetrics({ announcedPrice, shipping, otherCosts, salePrice })
 
@@ -68,15 +84,30 @@ export function RadarForm({ opportunity }: { opportunity?: RadarOpportunity }) {
 
   return (
     <form action={onSubmit} className="grid grid-cols-1 gap-6 lg:grid-cols-[1fr_320px]">
+      {prefill?.missionId ? (
+        <p className="lg:col-span-2 rounded-md border border-primary/30 bg-primary/10 px-3 py-2 text-xs text-primary">
+          Pré-preenchido a partir de uma missão de caça. Confira o preço anunciado e os custos reais.
+        </p>
+      ) : null}
       <div className="flex flex-col gap-6">
         <section className="rounded-xl border border-border bg-card p-5">
           <h2 className="mb-4 text-sm font-semibold tracking-tight">Produto e fonte</h2>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <Field label="SKU (opcional)" htmlFor="sku" error={fieldError("sku")}>
-              <Input id="sku" name="sku" defaultValue={opportunity?.sku ?? ""} placeholder="Ex.: DECA-1234" />
+              <Input
+                id="sku"
+                name="sku"
+                defaultValue={opportunity?.sku ?? prefill?.sku ?? ""}
+                placeholder="Ex.: DECA-1234"
+              />
             </Field>
             <Field label="Marca" htmlFor="brand" error={fieldError("brand")}>
-              <Input id="brand" name="brand" defaultValue={opportunity?.brand ?? ""} placeholder="Ex.: Deca" />
+              <Input
+                id="brand"
+                name="brand"
+                defaultValue={opportunity?.brand ?? prefill?.brand ?? ""}
+                placeholder="Ex.: Deca"
+              />
             </Field>
             <Field
               label="Nome do produto"
@@ -87,13 +118,13 @@ export function RadarForm({ opportunity }: { opportunity?: RadarOpportunity }) {
               <Input
                 id="name"
                 name="name"
-                defaultValue={opportunity?.name}
+                defaultValue={opportunity?.name ?? prefill?.name ?? ""}
                 placeholder="Descrição do produto anunciado"
                 required
               />
             </Field>
             <Field label="Fonte da oportunidade" htmlFor="source" error={fieldError("source")}>
-              <Select id="source" name="source" defaultValue={opportunity?.source ?? "OLX"}>
+              <Select id="source" name="source" defaultValue={opportunity?.source ?? prefill?.source ?? "OLX"}>
                 {SOURCES.map((s) => (
                   <option key={s.value} value={s.value}>
                     {s.label}
@@ -179,7 +210,7 @@ export function RadarForm({ opportunity }: { opportunity?: RadarOpportunity }) {
                 type="number"
                 step="0.01"
                 min="0"
-                defaultValue={opportunity?.salePrice ?? ""}
+                defaultValue={opportunity?.salePrice ?? prefill?.salePrice ?? ""}
                 onChange={(e) => setSalePrice(Number(e.target.value) || 0)}
                 placeholder="0,00"
                 required
