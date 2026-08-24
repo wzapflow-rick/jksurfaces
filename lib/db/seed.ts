@@ -39,7 +39,7 @@ async function main() {
       .onConflictDoNothing({ target: schema.products.sku })
   }
 
-  const count = await db.execute(sql`select count(*)::int as total from radar_jk_products`)
+  const count = await db.execute(sql`select count(*)::int as total from products`)
   console.log("[v0] Seed concluído. Produtos na tabela:", count)
   process.exit(0)
 }

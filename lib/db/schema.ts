@@ -11,12 +11,11 @@ import {
 /**
  * Schema do Radar JK.
  *
- * IMPORTANTE: todas as tabelas usam o prefixo `radar_jk_` para conviver com
- * as tabelas existentes do PostgreSQL compartilhado da JK sem qualquer
- * conflito. Nunca alteramos ou removemos tabelas fora deste namespace.
+ * As tabelas vivem em um banco de dados dedicado (`radar_jk`), entao usam
+ * nomes limpos, sem prefixo. O isolamento vem do banco separado.
  */
 
-export const products = pgTable("radar_jk_products", {
+export const products = pgTable("products", {
   id: uuid("id").defaultRandom().primaryKey(),
   sku: text("sku").notNull().unique(),
   name: text("name").notNull(),
@@ -34,7 +33,7 @@ export const products = pgTable("radar_jk_products", {
   updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
 })
 
-export const buyers = pgTable("radar_jk_buyers", {
+export const buyers = pgTable("buyers", {
   id: uuid("id").defaultRandom().primaryKey(),
   name: text("name").notNull(),
   company: text("company"),
@@ -46,7 +45,7 @@ export const buyers = pgTable("radar_jk_buyers", {
   updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
 })
 
-export const buyerProducts = pgTable("radar_jk_buyer_products", {
+export const buyerProducts = pgTable("buyer_products", {
   id: uuid("id").defaultRandom().primaryKey(),
   buyerId: uuid("buyer_id")
     .notNull()
@@ -62,7 +61,7 @@ export const buyerProducts = pgTable("radar_jk_buyer_products", {
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
 })
 
-export const offers = pgTable("radar_jk_offers", {
+export const offers = pgTable("offers", {
   id: uuid("id").defaultRandom().primaryKey(),
   productId: uuid("product_id")
     .notNull()
@@ -80,7 +79,7 @@ export const offers = pgTable("radar_jk_offers", {
  * Tabelas preparadas para as proximas fases (monitoramento, scans e historico
  * de precos). Ficam criadas e vazias nesta fase; nao sao usadas ainda.
  */
-export const opportunities = pgTable("radar_jk_opportunities", {
+export const opportunities = pgTable("opportunities", {
   id: uuid("id").defaultRandom().primaryKey(),
   productId: uuid("product_id")
     .notNull()
@@ -91,7 +90,7 @@ export const opportunities = pgTable("radar_jk_opportunities", {
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
 })
 
-export const priceHistory = pgTable("radar_jk_price_history", {
+export const priceHistory = pgTable("price_history", {
   id: uuid("id").defaultRandom().primaryKey(),
   productId: uuid("product_id")
     .notNull()
@@ -101,7 +100,7 @@ export const priceHistory = pgTable("radar_jk_price_history", {
   observedAt: timestamp("observed_at", { withTimezone: true }).notNull().defaultNow(),
 })
 
-export const scans = pgTable("radar_jk_scans", {
+export const scans = pgTable("scans", {
   id: uuid("id").defaultRandom().primaryKey(),
   source: text("source"),
   status: text("status"),
@@ -109,7 +108,7 @@ export const scans = pgTable("radar_jk_scans", {
   finishedAt: timestamp("finished_at", { withTimezone: true }),
 })
 
-export const settings = pgTable("radar_jk_settings", {
+export const settings = pgTable("settings", {
   id: text("id").primaryKey().default("default"),
   costPct: numeric("cost_pct", { precision: 5, scale: 2 }).notNull().default("62"),
   marginPct: numeric("margin_pct", { precision: 5, scale: 2 }).notNull().default("30"),

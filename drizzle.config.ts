@@ -5,9 +5,7 @@ export default {
   out: "./drizzle",
   dialect: "postgresql",
   dbCredentials: {
+    // Aponte para o banco dedicado radar_jk (ex.: postgres://.../radar_jk)
     url: process.env.DATABASE_URL ?? "",
   },
-  // Only manage tables that belong to the Radar JK namespace so we never
-  // touch pre-existing tables in the shared JK PostgreSQL database.
-  tablesFilter: ["radar_jk_*"],
 } satisfies Config
