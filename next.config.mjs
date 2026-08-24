@@ -1,5 +1,5 @@
 /** @type {import('next').NextConfig} */
-// Fase 2 — Radar JK
+// Fase 3 — Motor de caça
 const nextConfig = {
   async headers() {
     return [
