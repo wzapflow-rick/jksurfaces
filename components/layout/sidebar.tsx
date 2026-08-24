@@ -1,0 +1,61 @@
+"use client"
+
+import Link from "next/link"
+import { usePathname } from "next/navigation"
+import { LayoutDashboard, Package, Users, Crosshair, Settings, Radar } from "lucide-react"
+import { cn } from "@/lib/utils"
+
+const NAV = [
+  { href: "/", label: "Dashboard", icon: LayoutDashboard },
+  { href: "/produtos", label: "Produtos", icon: Package },
+  { href: "/compradores", label: "Compradores", icon: Users },
+  { href: "/oportunidades", label: "Oportunidades", icon: Crosshair },
+  { href: "/configuracoes", label: "Configurações", icon: Settings },
+]
+
+export function Sidebar() {
+  const pathname = usePathname()
+
+  return (
+    <aside className="sticky top-0 flex h-screen w-16 flex-col border-r border-border bg-surface md:w-60">
+      <div className="flex h-16 items-center gap-2.5 border-b border-border px-4 md:px-5">
+        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-primary/15 text-primary">
+          <Radar className="h-[18px] w-[18px]" strokeWidth={2.25} />
+        </div>
+        <div className="hidden min-w-0 md:block">
+          <p className="truncate text-sm font-semibold leading-tight">Radar JK</p>
+          <p className="truncate text-[11px] text-muted-foreground">Inteligência de aquisição</p>
+        </div>
+      </div>
+
+      <nav className="flex flex-1 flex-col gap-1 p-2 md:p-3">
+        {NAV.map((item) => {
+          const active = item.href === "/" ? pathname === "/" : pathname.startsWith(item.href)
+          const Icon = item.icon
+          return (
+            <Link
+              key={item.href}
+              href={item.href}
+              className={cn(
+                "flex items-center gap-3 rounded-md px-2.5 py-2 text-sm font-medium transition-colors md:px-3",
+                active
+                  ? "bg-muted text-foreground"
+                  : "text-muted-foreground hover:bg-muted/60 hover:text-foreground",
+              )}
+              title={item.label}
+            >
+              <Icon className="h-[18px] w-[18px] shrink-0" strokeWidth={2} />
+              <span className="hidden md:inline">{item.label}</span>
+            </Link>
+          )
+        })}
+      </nav>
+
+      <div className="hidden border-t border-border p-4 md:block">
+        <p className="text-[11px] leading-relaxed text-muted-foreground">
+          Fase 1 — Fundação. Sem integrações externas.
+        </p>
+      </div>
+    </aside>
+  )
+}
