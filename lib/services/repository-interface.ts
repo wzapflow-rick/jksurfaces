@@ -28,6 +28,7 @@ export interface Repository {
 
   // Buyer <-> Product relationships
   listBuyerProducts(buyerId: string): Promise<BuyerProduct[]>
+  listBuyerProductsByProduct(productId: string): Promise<BuyerProduct[]>
   addBuyerProduct(input: BuyerProductInput): Promise<BuyerProduct>
   removeBuyerProduct(id: string): Promise<void>
 

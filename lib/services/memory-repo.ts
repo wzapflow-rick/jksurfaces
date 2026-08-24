@@ -122,6 +122,9 @@ export const memoryRepo: Repository = {
   async listBuyerProducts(buyerId) {
     return store.buyerProducts.filter((bp) => bp.buyerId === buyerId).map((bp) => ({ ...bp }))
   },
+  async listBuyerProductsByProduct(productId) {
+    return store.buyerProducts.filter((bp) => bp.productId === productId).map((bp) => ({ ...bp }))
+  },
   async addBuyerProduct(input: BuyerProductInput) {
     const bp: BuyerProduct = { id: crypto.randomUUID(), ...input, createdAt: nowIso() }
     store.buyerProducts.push(bp)

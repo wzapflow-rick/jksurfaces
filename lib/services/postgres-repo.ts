@@ -220,6 +220,14 @@ export const postgresRepo: Repository = {
       .where(eq(schema.buyerProducts.buyerId, buyerId))
     return rows.map(mapBuyerProduct)
   },
+  async listBuyerProductsByProduct(productId) {
+    const d = requireDb()
+    const rows = await d
+      .select()
+      .from(schema.buyerProducts)
+      .where(eq(schema.buyerProducts.productId, productId))
+    return rows.map(mapBuyerProduct)
+  },
   async addBuyerProduct(input: BuyerProductInput) {
     const d = requireDb()
     const rows = await d
