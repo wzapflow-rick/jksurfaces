@@ -7,6 +7,7 @@ import type {
   PricingSettings,
   Product,
   RadarOpportunity,
+  SearchQuery,
 } from "@/types"
 import type {
   BuyerInput,
@@ -16,6 +17,7 @@ import type {
   OfferInput,
   ProductInput,
   RadarOpportunityInput,
+  SearchQueryInput,
   SettingsInput,
 } from "./dto"
 
@@ -72,4 +74,13 @@ export interface Repository {
   createHuntMission(input: HuntMissionInput): Promise<HuntMission>
   updateHuntMission(id: string, input: Partial<HuntMissionInput>): Promise<HuntMission | null>
   deleteHuntMission(id: string): Promise<void>
+
+  // Inteligência de Busca (Fase 5) — consultas inteligentes
+  listSearchQueriesByMission(missionId: string): Promise<SearchQuery[]>
+  /** Substitui todas as consultas de uma missão pelas informadas (regeneração). */
+  replaceSearchQueriesForMission(
+    missionId: string,
+    inputs: SearchQueryInput[],
+  ): Promise<SearchQuery[]>
+  deleteSearchQueriesForMission(missionId: string): Promise<void>
 }

@@ -6,6 +6,7 @@ import type {
   HuntStatus,
   RadarSource,
   RadarStatus,
+  SearchQueryType,
 } from "@/types"
 
 export interface ProductInput {
@@ -94,6 +95,15 @@ export interface HuntMissionInput {
   priority: HuntPriority
   status: HuntStatus
   notes: string | null
+}
+
+/** Entrada de uma consulta inteligente a persistir (Fase 5). */
+export interface SearchQueryInput {
+  missionId: string
+  sourceId: string | null
+  query: string
+  type: SearchQueryType
+  priority: number
 }
 
 export const DEFAULT_SETTINGS = {

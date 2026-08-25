@@ -271,3 +271,32 @@ export type HuntMissionWithMetrics = HuntMission & {
   /** Fontes selecionadas, já resolvidas (ativas e existentes). */
   sources: HuntSource[]
 }
+
+/* =============================================================================
+   INTELIGÊNCIA DE BUSCA — Fase 5
+   Consultas geradas a partir de uma missão. Apenas organizam o QUE e ONDE
+   pesquisar; não fazem scraping, não chamam APIs e não recalculam a oportunidade.
+   ============================================================================= */
+
+/** Tipo de consulta, do mais específico ao mais amplo. */
+export type SearchQueryType =
+  | "EXACT"
+  | "BRAND_MODEL"
+  | "PRODUCT_MODEL"
+  | "PRODUCT_BRAND"
+  | "SKU"
+  | "SKU_BRAND"
+  | "BROAD"
+
+/** Consulta inteligente persistida, associada a uma missão (e opcionalmente a uma fonte). */
+export interface SearchQuery {
+  id: string
+  missionId: string
+  /** Fonte específica quando aplicável; null = consulta canônica da missão. */
+  sourceId: string | null
+  query: string
+  type: SearchQueryType
+  /** Peso de ordenação (0–100). Nunca afeta o cálculo financeiro. */
+  priority: number
+  createdAt: string
+}

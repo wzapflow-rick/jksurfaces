@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache"
 import { repo } from "@/lib/services/repository"
+import { syncMissionSearchQueries } from "@/lib/services/hunt-service"
 import { huntMissionSchema, huntSourceSchema } from "@/lib/validation"
 import type { HuntPriority, HuntStatus } from "@/types"
 import type { ActionResult } from "./products"
@@ -42,7 +43,10 @@ export async function createHuntMissionAction(formData: FormData): Promise<Actio
   try {
     const data = parseMission(formData)
     const created = await repo.createHuntMission(data)
+    // Fase 5: gera as consultas inteligentes já na criação da missão.
+    await syncMissionSearchQueries(created.id)
     revalidatePath("/caca")
+    revalidatePath(`/caca/${created.id}`)
     revalidatePath("/")
     return { ok: true, id: created.id }
   } catch (error) {
@@ -57,6 +61,8 @@ export async function updateHuntMissionAction(
   try {
     const data = parseMission(formData)
     await repo.updateHuntMission(id, data)
+    // Fase 5: dados principais mudaram → regenera as consultas (sem duplicar).
+    await syncMissionSearchQueries(id)
     revalidatePath("/caca")
     revalidatePath(`/caca/${id}`)
     revalidatePath("/")

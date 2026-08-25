@@ -1,13 +1,18 @@
 import Link from "next/link"
 import { notFound } from "next/navigation"
 import { ArrowLeft, ExternalLink, Pencil, Search, Target } from "lucide-react"
-import { getHuntMissionWithMetrics, buildSourceLinks } from "@/lib/services/hunt-service"
+import {
+  getHuntMissionWithMetrics,
+  buildSourceLinks,
+  getMissionSearchQueries,
+} from "@/lib/services/hunt-service"
 import { PageHeader } from "@/components/layout/page-header"
 import { Button } from "@/components/ui/button"
 import { HuntPriorityBadge, HuntStatusBadge } from "@/components/hunt/hunt-badges"
 import { HuntSourceTypeIcon } from "@/components/hunt/hunt-source-icon"
 import { HuntStatusControl } from "@/components/hunt/hunt-status-control"
 import { HuntDeleteButton } from "@/components/hunt/hunt-delete-button"
+import { HuntSearchQueries } from "@/components/hunt/hunt-search-queries"
 import { RADAR_RULE, RECOMMENDED_MARGIN_PCT } from "@/lib/calculations/radar-opportunity"
 import {
   formatBRL,
@@ -29,6 +34,8 @@ export default async function MissaoDetailPage({
 
   const m = mission.metrics
   const links = buildSourceLinks(mission.sources, mission.searchTerm)
+  // Fase 5: consultas inteligentes já persistidas (ou geradas no primeiro acesso).
+  const searchQueries = await getMissionSearchQueries(id)
 
   // Prefill do fluxo "Encontrei" no Radar (Fase 3): nome, marca, sku, venda e
   // uma fonte plausível derivada da primeira fonte da missão.
@@ -167,6 +174,9 @@ export default async function MissaoDetailPage({
           automática (loja física, fornecedor) são consultadas manualmente.
         </p>
       </section>
+
+      {/* Fase 5: consultas inteligentes geradas a partir da missão */}
+      <HuntSearchQueries queries={searchQueries} sources={mission.sources} />
 
       {/* Ponte para a Fase 3: achou o produto? Registra como oportunidade no Radar */}
       <section className="flex flex-col gap-4 rounded-xl border border-primary/30 bg-primary/5 p-5 sm:flex-row sm:items-center sm:justify-between">

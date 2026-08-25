@@ -10,6 +10,7 @@ import type {
   RadarRecommendation,
   RadarSource,
   RadarStatus,
+  SearchQueryType,
 } from "@/types"
 
 export function cn(...inputs: ClassValue[]) {
@@ -162,6 +163,51 @@ export const HUNT_SOURCE_TYPE_META: Record<HuntSourceType, { label: string }> = 
   LOJA_FISICA: { label: "Loja física" },
   FORNECEDOR: { label: "Fornecedor" },
   OUTRO: { label: "Outro" },
+}
+
+/**
+ * Metadados das consultas inteligentes (Fase 5). `label` curto e `tone` de
+ * badge. A prioridade é exibida separadamente; aqui só descrevemos o tipo.
+ */
+export const SEARCH_QUERY_TYPE_META: Record<
+  SearchQueryType,
+  { label: string; description: string; tone: string }
+> = {
+  EXACT: {
+    label: "Exata",
+    description: "Termo completo, como digitado",
+    tone: "border-status-go/30 bg-status-go/10 text-status-go",
+  },
+  SKU: {
+    label: "SKU",
+    description: "Código exato do produto",
+    tone: "border-primary/30 bg-primary/10 text-primary",
+  },
+  SKU_BRAND: {
+    label: "SKU + marca",
+    description: "Código com a marca",
+    tone: "border-primary/30 bg-primary/10 text-primary",
+  },
+  BRAND_MODEL: {
+    label: "Marca + modelo",
+    description: "Marca com o modelo",
+    tone: "border-status-watch/30 bg-status-watch/10 text-status-watch",
+  },
+  PRODUCT_MODEL: {
+    label: "Produto + modelo",
+    description: "Produto com o modelo",
+    tone: "border-status-watch/30 bg-status-watch/10 text-status-watch",
+  },
+  PRODUCT_BRAND: {
+    label: "Produto + marca",
+    description: "Produto com a marca",
+    tone: "border-border-strong bg-surface-2 text-muted-foreground",
+  },
+  BROAD: {
+    label: "Ampla",
+    description: "Busca mais aberta",
+    tone: "border-border-strong bg-muted text-muted-foreground",
+  },
 }
 
 /**
