@@ -14,6 +14,7 @@ import { HuntStatusControl } from "@/components/hunt/hunt-status-control"
 import { HuntDeleteButton } from "@/components/hunt/hunt-delete-button"
 import { HuntSearchQueries } from "@/components/hunt/hunt-search-queries"
 import { HuntChatubaSearch } from "@/components/hunt/hunt-chatuba-search"
+import { ImportAdButton } from "@/components/offers/import-ad-button"
 import { RADAR_RULE, RECOMMENDED_MARGIN_PCT } from "@/lib/calculations/radar-opportunity"
 import {
   formatBRL,
@@ -185,6 +186,30 @@ export default async function MissaoDetailPage({
         defaultQuery={mission.searchTerm}
         expectedSalePrice={mission.expectedSalePrice}
       />
+
+      {/* Fase 6.3: importação manual de anúncio (ex.: OLX) a partir da missão */}
+      <section className="flex flex-col gap-4 rounded-xl border border-border bg-card p-5 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <h2 className="text-sm font-semibold tracking-tight text-foreground">
+            Achou um anúncio na OLX?
+          </h2>
+          <p className="mt-1 text-sm text-muted-foreground">
+            Importe o anúncio para associar ao produto e avaliar. Você revisa cada campo — nada é
+            enviado ao Radar automaticamente.
+          </p>
+        </div>
+        <div className="shrink-0">
+          <ImportAdButton
+            size="default"
+            prefill={{
+              missionId: mission.id,
+              brand: mission.brand,
+              sku: mission.sku,
+              salePrice: mission.expectedSalePrice,
+            }}
+          />
+        </div>
+      </section>
 
       {/* Ponte para a Fase 3: achou o produto? Registra como oportunidade no Radar */}
       <section className="flex flex-col gap-4 rounded-xl border border-primary/30 bg-primary/5 p-5 sm:flex-row sm:items-center sm:justify-between">

@@ -166,6 +166,14 @@ export interface ImportActionResult {
   offerId?: string
   created?: boolean
   priceChange?: OfferImportResult["priceChange"]
+  /** Dados para montar o link "Analisar no Radar" após a importação. */
+  radar?: {
+    unitPrice: number
+    matchedProductId: string | null
+    /** Preço de venda B2B do produto JK associado (se houver match). */
+    salePrice: number | null
+    productSku: string | null
+  }
   error?: string
 }
 
@@ -203,11 +211,29 @@ export async function importOfferAction(input: ImportActionInput): Promise<Impor
       fieldOrigins: input.fieldOrigins,
     })
     revalidatePath("/ofertas")
+
+    // Enriquecer com dados do produto JK associado (para o link do Radar).
+    let salePrice: number | null = null
+    let productSku: string | null = null
+    if (result.offer.matchedProductId) {
+      const product = await repo.getProduct(result.offer.matchedProductId)
+      if (product) {
+        salePrice = product.priceB2B
+        productSku = product.sku
+      }
+    }
+
     return {
       ok: true,
       offerId: result.offer.id,
       created: result.created,
       priceChange: result.priceChange,
+      radar: {
+        unitPrice: result.offer.unitPrice ?? result.offer.price,
+        matchedProductId: result.offer.matchedProductId,
+        salePrice,
+        productSku,
+      },
     }
   } catch (error) {
     console.log("[v0] importOfferAction error:", error)
