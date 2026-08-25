@@ -300,3 +300,113 @@ export interface SearchQuery {
   priority: number
   createdAt: string
 }
+
+/* =============================================================================
+   CAPTURA DE OFERTAS — Fase 6.1
+   Primeira integração real de captura de ofertas. A arquitetura é baseada em
+   "Source Adapters": cada fonte implementa a mesma interface e converte seus
+   resultados públicos para a entidade interna comum `SourceOffer`. Nesta fase
+   apenas a Chatuba está implementada (via API pública VTEX de catálogo).
+   ============================================================================= */
+
+/**
+ * Chave da fonte de captura. Extensível: novas fontes (Mercado Livre, OLX…)
+ * apenas acrescentam valores aqui e registram um adapter — o Radar não muda.
+ */
+export type OfferSource = "CHATUBA"
+
+/**
+ * Método pelo qual uma oferta foi associada a um produto JK, do mais forte
+ * (identificador exato) ao mais fraco (nome). Ordena a prioridade do matching.
+ */
+export type MatchMethod =
+  | "EAN_EXACT"
+  | "SKU_EXACT"
+  | "SKU_NORMALIZED"
+  | "BRAND_MODEL"
+  | "NAME_MATCH"
+  | "UNKNOWN"
+
+/**
+ * Situação do match de uma oferta:
+ *  - MATCHED ...... associação de alta confiança (>= 0,9);
+ *  - REVIEW ....... associação de baixa confiança, precisa revisão humana;
+ *  - UNMATCHED .... nenhuma associação encontrada.
+ * Baixa confiança NUNCA é tratada como certeza.
+ */
+export type MatchStatus = "MATCHED" | "REVIEW" | "UNMATCHED"
+
+/**
+ * Oferta capturada e normalizada de uma fonte externa. Guarda apenas os dados
+ * necessários para análise — nunca HTML completo. `rawData` mantém um resumo
+ * mínimo dos campos brutos úteis (não a página inteira).
+ */
+export interface SourceOffer {
+  id: string
+  source: string
+  /** Identificador da oferta na fonte (ex.: productId VTEX). */
+  externalId: string | null
+  productTitle: string
+  sku: string | null
+  ean: string | null
+  brand: string | null
+  url: string
+  imageUrl: string | null
+  price: number
+  shipping: number | null
+  /** Quantidade disponível informada pela fonte (null = desconhecida). */
+  availability: number | null
+  seller: string | null
+  /** Momento da captura (ISO). */
+  capturedAt: string
+  /* ---- Matching persistido ---- */
+  matchStatus: MatchStatus
+  matchedProductId: string | null
+  matchConfidence: number
+  matchMethod: MatchMethod
+  /** Resumo mínimo dos dados brutos úteis (não a resposta completa). */
+  rawData: Record<string, unknown> | null
+  createdAt: string
+  updatedAt: string
+}
+
+/** Resultado do serviço de matching de uma oferta contra os produtos JK. */
+export interface OfferMatchResult {
+  matched: boolean
+  productId: string | null
+  confidence: number
+  matchMethod: MatchMethod
+  status: MatchStatus
+}
+
+/** Entrada do histórico de preço de uma oferta. */
+export interface SourceOfferPriceHistoryEntry {
+  id: string
+  offerId: string
+  price: number
+  shipping: number | null
+  capturedAt: string
+}
+
+/**
+ * Métricas de uma oferta contra a operação JK, calculadas SEMPRE com o motor
+ * financeiro das Fases 3/4 (nunca duplicado). Só existem quando há um preço de
+ * venda de referência (produto JK associado ou venda esperada da missão).
+ */
+export interface SourceOfferMetrics {
+  /** Preço de venda de referência usado (produto JK ou missão). */
+  salePrice: number
+  maxPurchasePrice: number
+  recommendedPurchasePrice: number
+  estimatedResult: number
+  /** Diferença entre o preço máximo JK e o preço da oferta (positivo = folga). */
+  differenceToMax: number
+  recommendation: RadarRecommendation
+  classification: RadarClassification
+}
+
+/** Oferta com o produto JK vinculado (quando houver) e métricas do motor JK. */
+export interface SourceOfferWithMetrics extends SourceOffer {
+  product: Product | null
+  metrics: SourceOfferMetrics | null
+}

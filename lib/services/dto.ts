@@ -4,6 +4,8 @@ import type {
   HuntPriority,
   HuntSourceType,
   HuntStatus,
+  MatchMethod,
+  MatchStatus,
   RadarSource,
   RadarStatus,
   SearchQueryType,
@@ -104,6 +106,28 @@ export interface SearchQueryInput {
   query: string
   type: SearchQueryType
   priority: number
+}
+
+/** Entrada de uma oferta capturada a persistir (Fase 6.1). */
+export interface SourceOfferInput {
+  source: string
+  externalId: string | null
+  productTitle: string
+  sku: string | null
+  ean: string | null
+  brand: string | null
+  url: string
+  imageUrl: string | null
+  price: number
+  shipping: number | null
+  availability: number | null
+  seller: string | null
+  capturedAt: string
+  matchStatus: MatchStatus
+  matchedProductId: string | null
+  matchConfidence: number
+  matchMethod: MatchMethod
+  rawData: Record<string, unknown> | null
 }
 
 export const DEFAULT_SETTINGS = {
