@@ -71,9 +71,14 @@ interface VtexSeller {
 interface VtexImage {
   imageUrl?: string
 }
+interface VtexReference {
+  Key?: string
+  Value?: string
+}
 interface VtexItem {
   itemId?: string
   ean?: string
+  referenceId?: VtexReference[]
   images?: VtexImage[]
   sellers?: VtexSeller[]
 }
@@ -88,6 +93,50 @@ interface VtexProduct {
 function num(value: unknown): number | null {
   if (typeof value !== "number" || Number.isNaN(value)) return null
   return value
+}
+
+/**
+ * Converte um produto bruto do catálogo público VTEX em `NormalizedOffer`.
+ * Exportada isoladamente para permitir testes determinísticos sem rede.
+ *
+ * SKU: prioriza o `referenceId` (código de referência legível do produto, útil
+ * para o matching contra o SKU da JK); cai para o `itemId` (id numérico VTEX)
+ * quando não houver referência.
+ */
+export function normalizeVtexProduct(raw: unknown): NormalizedOffer | null {
+  if (!raw || typeof raw !== "object") return null
+  const p = raw as VtexProduct
+  const item = p.items?.[0]
+  const seller = item?.sellers?.[0]
+  const offer = seller?.commertialOffer
+  const price = num(offer?.Price)
+  // Sem preço público (ou preço não positivo) não há oferta analisável.
+  if (price === null || price <= 0) return null
+  const url = p.link ?? `${BASE_URL}/${p.productId ?? ""}/p`
+  const referenceId = item?.referenceId?.find((r) => r.Value && r.Value.trim())?.Value?.trim()
+
+  return {
+    source: SOURCE,
+    externalId: p.productId ?? null,
+    productTitle: (p.productName ?? "").trim() || "Produto sem título",
+    sku: referenceId || item?.itemId || null,
+    ean: item?.ean && item.ean.trim() ? item.ean.trim() : null,
+    brand: p.brand?.trim() || null,
+    url,
+    imageUrl: item?.images?.[0]?.imageUrl ?? null,
+    price,
+    // Frete não vem da busca pública (ver limitações no topo do arquivo).
+    shipping: null,
+    availability: num(offer?.AvailableQuantity),
+    seller: seller?.sellerName?.trim() || null,
+    capturedAt: new Date().toISOString(),
+    // Guarda apenas um resumo mínimo — nunca HTML/página completa.
+    rawData: {
+      productId: p.productId ?? null,
+      itemId: item?.itemId ?? null,
+      listPrice: num(offer?.ListPrice),
+    },
+  }
 }
 
 /** Faz uma requisição pública com timeout, rate limiting e retry limitado. */
@@ -163,38 +212,7 @@ export const chatubaAdapter: SourceAdapter = {
   },
 
   normalize(raw) {
-    if (!raw || typeof raw !== "object") return null
-    const p = raw as VtexProduct
-    const item = p.items?.[0]
-    const seller = item?.sellers?.[0]
-    const offer = seller?.commertialOffer
-    const price = num(offer?.Price)
-    // Sem preço público não há oferta analisável.
-    if (price === null) return null
-    const url = p.link ?? `${BASE_URL}/${p.productId ?? ""}/p`
-
-    return {
-      source: SOURCE,
-      externalId: p.productId ?? null,
-      productTitle: (p.productName ?? "").trim() || "Produto sem título",
-      sku: item?.itemId ?? null,
-      ean: item?.ean && item.ean.trim() ? item.ean.trim() : null,
-      brand: p.brand?.trim() || null,
-      url,
-      imageUrl: item?.images?.[0]?.imageUrl ?? null,
-      price,
-      // Frete não vem da busca pública (ver limitações no topo do arquivo).
-      shipping: null,
-      availability: num(offer?.AvailableQuantity),
-      seller: seller?.sellerName?.trim() || null,
-      capturedAt: new Date().toISOString(),
-      // Guarda apenas um resumo mínimo — nunca HTML/página completa.
-      rawData: {
-        productId: p.productId ?? null,
-        itemId: item?.itemId ?? null,
-        listPrice: num(offer?.ListPrice),
-      },
-    }
+    return normalizeVtexProduct(raw)
   },
 
   identifyProduct(offer): OfferIdentity {
