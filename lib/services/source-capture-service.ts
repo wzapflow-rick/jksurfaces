@@ -89,6 +89,83 @@ export interface CaptureSummary {
   updated: number
 }
 
+/** Resultado da persistência de UMA oferta (usado pela captura e pela importação). */
+export interface PersistOfferResult {
+  offer: SourceOffer
+  created: boolean
+  updated: boolean
+  priceChanged: boolean
+}
+
+/**
+ * Faz o matching de uma oferta normalizada contra candidatos e a persiste com
+ * deduplicação e histórico de preço. Ponto ÚNICO de persistência de ofertas —
+ * reutilizado tanto pela captura ao vivo (Chatuba) quanto pela importação
+ * manual (OLX, Fase 6.3), para nunca duplicar a regra de dedupe/histórico.
+ */
+async function persistNormalizedOffer(
+  off: NormalizedOffer,
+  candidates: MatchCandidate[],
+): Promise<PersistOfferResult> {
+  const match = matchOfferToProduct(
+    { sku: off.sku, ean: off.ean, brand: off.brand, productTitle: off.productTitle },
+    candidates,
+  )
+  const matchFields = {
+    matchStatus: match.status,
+    matchedProductId: match.productId,
+    matchConfidence: match.confidence,
+    matchMethod: match.matchMethod,
+  }
+
+  const existing = await repo.findSourceOfferForDedupe(off.source, off.externalId, off.url)
+  if (existing) {
+    const priceChanged =
+      round2(existing.price) !== round2(off.price) ||
+      (existing.shipping ?? null) !== (off.shipping ?? null)
+    const saved = await repo.updateSourceOffer(existing.id, {
+      productTitle: off.productTitle,
+      sku: off.sku,
+      ean: off.ean,
+      brand: off.brand,
+      url: off.url,
+      imageUrl: off.imageUrl,
+      price: off.price,
+      shipping: off.shipping,
+      availability: off.availability,
+      seller: off.seller,
+      capturedAt: off.capturedAt,
+      rawData: off.rawData,
+      ...matchFields,
+    })
+    if (priceChanged) {
+      await repo.addSourceOfferPriceHistory(existing.id, off.price, off.shipping, off.capturedAt)
+    }
+    return { offer: saved ?? existing, created: false, updated: true, priceChanged }
+  }
+
+  const saved = await repo.createSourceOffer({
+    source: off.source,
+    externalId: off.externalId,
+    productTitle: off.productTitle,
+    sku: off.sku,
+    ean: off.ean,
+    brand: off.brand,
+    url: off.url,
+    imageUrl: off.imageUrl,
+    price: off.price,
+    shipping: off.shipping,
+    availability: off.availability,
+    seller: off.seller,
+    capturedAt: off.capturedAt,
+    rawData: off.rawData,
+    ...matchFields,
+  })
+  // Baseline do histórico na primeira captura.
+  await repo.addSourceOfferPriceHistory(saved.id, off.price, off.shipping, off.capturedAt)
+  return { offer: saved, created: true, updated: false, priceChanged: false }
+}
+
 /**
  * Busca na fonte, associa a produtos JK, deduplica e persiste. Atualiza preço,
  * disponibilidade e capturedAt de ofertas já existentes, registrando histórico
@@ -108,68 +185,24 @@ export async function captureFromSource(
   let updated = 0
 
   for (const off of normalized) {
-    const match = matchOfferToProduct(
-      { sku: off.sku, ean: off.ean, brand: off.brand, productTitle: off.productTitle },
-      candidates,
-    )
-    const matchFields = {
-      matchStatus: match.status,
-      matchedProductId: match.productId,
-      matchConfidence: match.confidence,
-      matchMethod: match.matchMethod,
-    }
-
-    const existing = await repo.findSourceOfferForDedupe(source, off.externalId, off.url)
-    if (existing) {
-      const priceChanged =
-        round2(existing.price) !== round2(off.price) ||
-        (existing.shipping ?? null) !== (off.shipping ?? null)
-      const saved = await repo.updateSourceOffer(existing.id, {
-        productTitle: off.productTitle,
-        sku: off.sku,
-        ean: off.ean,
-        brand: off.brand,
-        url: off.url,
-        imageUrl: off.imageUrl,
-        price: off.price,
-        shipping: off.shipping,
-        availability: off.availability,
-        seller: off.seller,
-        capturedAt: off.capturedAt,
-        rawData: off.rawData,
-        ...matchFields,
-      })
-      if (priceChanged) {
-        await repo.addSourceOfferPriceHistory(existing.id, off.price, off.shipping, off.capturedAt)
-      }
-      updated++
-      if (saved) offers.push(saved)
-    } else {
-      const saved = await repo.createSourceOffer({
-        source: off.source,
-        externalId: off.externalId,
-        productTitle: off.productTitle,
-        sku: off.sku,
-        ean: off.ean,
-        brand: off.brand,
-        url: off.url,
-        imageUrl: off.imageUrl,
-        price: off.price,
-        shipping: off.shipping,
-        availability: off.availability,
-        seller: off.seller,
-        capturedAt: off.capturedAt,
-        rawData: off.rawData,
-        ...matchFields,
-      })
-      // Baseline do histórico na primeira captura.
-      await repo.addSourceOfferPriceHistory(saved.id, off.price, off.shipping, off.capturedAt)
-      created++
-      offers.push(saved)
-    }
+    const result = await persistNormalizedOffer(off, candidates)
+    if (result.created) created++
+    else updated++
+    offers.push(result.offer)
   }
 
   return { offers, created, updated }
+}
+
+/**
+ * Persiste UMA oferta fornecida manualmente (importação da Fase 6.3), fazendo
+ * matching contra os produtos JK, deduplicando por URL/externalId e registrando
+ * histórico de preço quando o valor muda. NÃO cria oportunidade no Radar.
+ */
+export async function persistImportedOffer(off: NormalizedOffer): Promise<PersistOfferResult> {
+  const products = await repo.listProducts()
+  const candidates = toCandidates(products)
+  return persistNormalizedOffer(off, candidates)
 }
 
 /**
