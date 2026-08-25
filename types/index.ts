@@ -310,10 +310,17 @@ export interface SearchQuery {
    ============================================================================= */
 
 /**
- * Chave da fonte de captura. Extensível: novas fontes (Mercado Livre, OLX…)
- * apenas acrescentam valores aqui e registram um adapter — o Radar não muda.
+ * Chave da fonte de captura. Extensível: novas fontes (Mercado Livre…) apenas
+ * acrescentam valores aqui e registram um adapter — o Radar não muda.
+ *
+ * OLX (Fase 6.2): a chave existe e o adapter está registrado, mas a captura ao
+ * vivo NÃO está disponível — todo o site público da OLX está atrás do
+ * Cloudflare Bot Management (HTTP 403 a qualquer cliente automatizado) e a API
+ * oficial serve apenas para gerenciar os próprios anúncios, não para buscar
+ * anúncios públicos de terceiros. Conforme a regra da fase, NÃO criamos
+ * mecanismo para contornar essa proteção; o adapter degrada com elegância.
  */
-export type OfferSource = "CHATUBA"
+export type OfferSource = "CHATUBA" | "OLX"
 
 /**
  * Método pelo qual uma oferta foi associada a um produto JK, do mais forte

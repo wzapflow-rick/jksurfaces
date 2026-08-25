@@ -14,7 +14,8 @@
     "typecheck": "tsc --noEmit",
     "test:radar": "tsx scripts/test-radar-calc.ts",
     "test:offers": "tsx scripts/test-offer-capture.ts",
-    "test": "tsx scripts/test-radar-calc.ts && tsx scripts/test-offer-capture.ts"
+    "test:olx": "tsx scripts/test-olx-parsers.ts",
+    "test": "tsx scripts/test-radar-calc.ts && tsx scripts/test-offer-capture.ts && tsx scripts/test-olx-parsers.ts"
   },
   "dependencies": {
     "next": "15.3.9",
