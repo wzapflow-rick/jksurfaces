@@ -1,4 +1,4 @@
-import { desc, eq } from "drizzle-orm"
+import { and, desc, eq, isNull } from "drizzle-orm"
 import type {
   AcquisitionStatus,
   Buyer,
@@ -9,6 +9,8 @@ import type {
   HuntSource,
   HuntSourceType,
   HuntStatus,
+  MatchMethod,
+  MatchStatus,
   Offer,
   PricingSettings,
   Product,
@@ -17,6 +19,8 @@ import type {
   RadarStatus,
   SearchQuery,
   SearchQueryType,
+  SourceOffer,
+  SourceOfferPriceHistoryEntry,
 } from "@/types"
 import { db, schema } from "@/lib/db/client"
 import { DEFAULT_SETTINGS } from "./dto"
@@ -30,6 +34,7 @@ import type {
   RadarOpportunityInput,
   SearchQueryInput,
   SettingsInput,
+  SourceOfferInput,
 } from "./dto"
 import type { Repository } from "./repository-interface"
 
@@ -58,6 +63,8 @@ type RadarRow = typeof schema.radarOpportunities.$inferSelect
 type HuntSourceRow = typeof schema.huntSources.$inferSelect
 type HuntMissionRow = typeof schema.huntMissions.$inferSelect
 type SearchQueryRow = typeof schema.huntSearchQueries.$inferSelect
+type SourceOfferRow = typeof schema.sourceOffers.$inferSelect
+type SourceOfferPriceHistoryRow = typeof schema.sourceOfferPriceHistory.$inferSelect
 
 function mapProduct(row: ProductRow): Product {
   return {
@@ -227,6 +234,65 @@ function mapSearchQuery(row: SearchQueryRow): SearchQuery {
     type: row.type as SearchQueryType,
     priority: row.priority,
     createdAt: iso(row.createdAt),
+  }
+}
+
+function mapSourceOffer(row: SourceOfferRow): SourceOffer {
+  return {
+    id: row.id,
+    source: row.source,
+    externalId: row.externalId,
+    productTitle: row.productTitle,
+    sku: row.sku,
+    ean: row.ean,
+    brand: row.brand,
+    url: row.url,
+    imageUrl: row.imageUrl,
+    price: num(row.price) ?? 0,
+    shipping: num(row.shipping),
+    availability: row.availability,
+    seller: row.seller,
+    capturedAt: iso(row.capturedAt),
+    matchStatus: row.matchStatus as MatchStatus,
+    matchedProductId: row.matchedProductId,
+    matchConfidence: num(row.matchConfidence) ?? 0,
+    matchMethod: row.matchMethod as MatchMethod,
+    rawData: (row.rawData as Record<string, unknown> | null) ?? null,
+    createdAt: iso(row.createdAt),
+    updatedAt: iso(row.updatedAt),
+  }
+}
+
+function sourceOfferValues(input: Partial<SourceOfferInput>) {
+  const values: Record<string, unknown> = {}
+  if (input.source !== undefined) values.source = input.source
+  if (input.externalId !== undefined) values.externalId = input.externalId
+  if (input.productTitle !== undefined) values.productTitle = input.productTitle
+  if (input.sku !== undefined) values.sku = input.sku
+  if (input.ean !== undefined) values.ean = input.ean
+  if (input.brand !== undefined) values.brand = input.brand
+  if (input.url !== undefined) values.url = input.url
+  if (input.imageUrl !== undefined) values.imageUrl = input.imageUrl
+  if (input.price !== undefined) values.price = String(input.price)
+  if (input.shipping !== undefined) values.shipping = input.shipping === null ? null : String(input.shipping)
+  if (input.availability !== undefined) values.availability = input.availability
+  if (input.seller !== undefined) values.seller = input.seller
+  if (input.capturedAt !== undefined) values.capturedAt = new Date(input.capturedAt)
+  if (input.matchStatus !== undefined) values.matchStatus = input.matchStatus
+  if (input.matchedProductId !== undefined) values.matchedProductId = input.matchedProductId
+  if (input.matchConfidence !== undefined) values.matchConfidence = String(input.matchConfidence)
+  if (input.matchMethod !== undefined) values.matchMethod = input.matchMethod
+  if (input.rawData !== undefined) values.rawData = input.rawData
+  return values
+}
+
+function mapSourceOfferHistory(row: SourceOfferPriceHistoryRow): SourceOfferPriceHistoryEntry {
+  return {
+    id: row.id,
+    offerId: row.offerId,
+    price: num(row.price) ?? 0,
+    shipping: num(row.shipping),
+    capturedAt: iso(row.capturedAt),
   }
 }
 
@@ -529,6 +595,76 @@ export const postgresRepo: Repository = {
   async deleteSearchQueriesForMission(missionId) {
     const d = requireDb()
     await d.delete(schema.huntSearchQueries).where(eq(schema.huntSearchQueries.missionId, missionId))
+  },
+
+  async listSourceOffers() {
+    const d = requireDb()
+    const rows = await d
+      .select()
+      .from(schema.sourceOffers)
+      .orderBy(desc(schema.sourceOffers.capturedAt))
+    return rows.map(mapSourceOffer)
+  },
+  async getSourceOffer(id) {
+    const d = requireDb()
+    const rows = await d.select().from(schema.sourceOffers).where(eq(schema.sourceOffers.id, id))
+    return rows[0] ? mapSourceOffer(rows[0]) : null
+  },
+  async findSourceOfferForDedupe(source, externalId, url) {
+    const d = requireDb()
+    const condition = externalId
+      ? and(eq(schema.sourceOffers.source, source), eq(schema.sourceOffers.externalId, externalId))
+      : and(
+          eq(schema.sourceOffers.source, source),
+          isNull(schema.sourceOffers.externalId),
+          eq(schema.sourceOffers.url, url),
+        )
+    const rows = await d.select().from(schema.sourceOffers).where(condition).limit(1)
+    return rows[0] ? mapSourceOffer(rows[0]) : null
+  },
+  async createSourceOffer(input: SourceOfferInput) {
+    const d = requireDb()
+    const rows = await d
+      .insert(schema.sourceOffers)
+      .values(sourceOfferValues(input) as never)
+      .returning()
+    return mapSourceOffer(rows[0])
+  },
+  async updateSourceOffer(id, input) {
+    const d = requireDb()
+    const rows = await d
+      .update(schema.sourceOffers)
+      .set({ ...sourceOfferValues(input), updatedAt: new Date() } as never)
+      .where(eq(schema.sourceOffers.id, id))
+      .returning()
+    return rows[0] ? mapSourceOffer(rows[0]) : null
+  },
+  async deleteSourceOffer(id) {
+    const d = requireDb()
+    await d.delete(schema.sourceOffers).where(eq(schema.sourceOffers.id, id))
+  },
+
+  async listSourceOfferPriceHistory(offerId) {
+    const d = requireDb()
+    const rows = await d
+      .select()
+      .from(schema.sourceOfferPriceHistory)
+      .where(eq(schema.sourceOfferPriceHistory.offerId, offerId))
+      .orderBy(desc(schema.sourceOfferPriceHistory.capturedAt))
+    return rows.map(mapSourceOfferHistory)
+  },
+  async addSourceOfferPriceHistory(offerId, price, shipping, capturedAt) {
+    const d = requireDb()
+    const rows = await d
+      .insert(schema.sourceOfferPriceHistory)
+      .values({
+        offerId,
+        price: String(price),
+        shipping: shipping === null ? null : String(shipping),
+        capturedAt: new Date(capturedAt),
+      })
+      .returning()
+    return mapSourceOfferHistory(rows[0])
   },
 }
 

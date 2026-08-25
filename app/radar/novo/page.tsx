@@ -25,13 +25,18 @@ export default async function NovaOportunidadePage({
   const sourceRaw = first(sp.source)
   const salePriceRaw = first(sp.salePrice)
   const missionId = first(sp.missionId)
+  const url = first(sp.url)
+  const announcedPriceRaw = first(sp.announcedPrice)
 
   const source = sourceRaw && VALID_SOURCES.includes(sourceRaw as RadarSource)
     ? (sourceRaw as RadarSource)
     : undefined
   const salePrice = salePriceRaw ? Number(salePriceRaw) : undefined
+  const announcedPrice = announcedPriceRaw ? Number(announcedPriceRaw) : undefined
 
-  const hasPrefill = Boolean(name || sku || brand || source || salePrice || missionId)
+  const hasPrefill = Boolean(
+    name || sku || brand || source || salePrice || missionId || url || announcedPrice,
+  )
   const prefill: RadarPrefill | undefined = hasPrefill
     ? {
         name,
@@ -40,6 +45,8 @@ export default async function NovaOportunidadePage({
         source,
         salePrice: Number.isFinite(salePrice) ? salePrice : undefined,
         missionId,
+        url,
+        announcedPrice: Number.isFinite(announcedPrice) ? announcedPrice : undefined,
       }
     : undefined
 

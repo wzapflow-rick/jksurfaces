@@ -13,6 +13,7 @@ import { HuntSourceTypeIcon } from "@/components/hunt/hunt-source-icon"
 import { HuntStatusControl } from "@/components/hunt/hunt-status-control"
 import { HuntDeleteButton } from "@/components/hunt/hunt-delete-button"
 import { HuntSearchQueries } from "@/components/hunt/hunt-search-queries"
+import { HuntChatubaSearch } from "@/components/hunt/hunt-chatuba-search"
 import { RADAR_RULE, RECOMMENDED_MARGIN_PCT } from "@/lib/calculations/radar-opportunity"
 import {
   formatBRL,
@@ -177,6 +178,13 @@ export default async function MissaoDetailPage({
 
       {/* Fase 5: consultas inteligentes geradas a partir da missão */}
       <HuntSearchQueries queries={searchQueries} sources={mission.sources} />
+
+      {/* Fase 6.1: captura real de ofertas da Chatuba a partir da missão */}
+      <HuntChatubaSearch
+        missionId={mission.id}
+        defaultQuery={mission.searchTerm}
+        expectedSalePrice={mission.expectedSalePrice}
+      />
 
       {/* Ponte para a Fase 3: achou o produto? Registra como oportunidade no Radar */}
       <section className="flex flex-col gap-4 rounded-xl border border-primary/30 bg-primary/5 p-5 sm:flex-row sm:items-center sm:justify-between">

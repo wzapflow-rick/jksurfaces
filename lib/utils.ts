@@ -6,6 +6,8 @@ import type {
   HuntPriority,
   HuntSourceType,
   HuntStatus,
+  MatchMethod,
+  MatchStatus,
   RadarClassification,
   RadarRecommendation,
   RadarSource,
@@ -208,6 +210,45 @@ export const SEARCH_QUERY_TYPE_META: Record<
     description: "Busca mais aberta",
     tone: "border-border-strong bg-muted text-muted-foreground",
   },
+}
+
+/* ---------------------------------------------------------------------------
+   CAPTURA DE OFERTAS (Fase 6.1) — metadados de exibição
+   -------------------------------------------------------------------------- */
+
+export const OFFER_SOURCE_META: Record<string, { label: string }> = {
+  CHATUBA: { label: "Chatuba" },
+}
+
+export function offerSourceLabel(source: string): string {
+  return OFFER_SOURCE_META[source]?.label ?? source
+}
+
+export const MATCH_STATUS_META: Record<MatchStatus, { label: string; tone: string; dot: string }> = {
+  MATCHED: {
+    label: "Associado",
+    tone: "border-status-go/30 bg-status-go/10 text-status-go",
+    dot: "bg-status-go",
+  },
+  REVIEW: {
+    label: "Revisar associação",
+    tone: "border-status-watch/30 bg-status-watch/10 text-status-watch",
+    dot: "bg-status-watch",
+  },
+  UNMATCHED: {
+    label: "Sem produto JK",
+    tone: "border-border-strong bg-muted text-muted-foreground",
+    dot: "bg-muted-foreground",
+  },
+}
+
+export const MATCH_METHOD_META: Record<MatchMethod, { label: string }> = {
+  EAN_EXACT: { label: "EAN exato" },
+  SKU_EXACT: { label: "SKU exato" },
+  SKU_NORMALIZED: { label: "SKU normalizado" },
+  BRAND_MODEL: { label: "Marca + modelo" },
+  NAME_MATCH: { label: "Similaridade de nome" },
+  UNKNOWN: { label: "Sem correspondência" },
 }
 
 /**

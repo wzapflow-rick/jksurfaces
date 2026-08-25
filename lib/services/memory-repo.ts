@@ -8,6 +8,8 @@ import type {
   Product,
   RadarOpportunity,
   SearchQuery,
+  SourceOffer,
+  SourceOfferPriceHistoryEntry,
 } from "@/types"
 import { SEED_PRODUCTS } from "@/lib/db/seed-data"
 import { DEFAULT_HUNT_SOURCES, DEFAULT_SETTINGS } from "./dto"
@@ -21,6 +23,7 @@ import type {
   RadarOpportunityInput,
   SearchQueryInput,
   SettingsInput,
+  SourceOfferInput,
 } from "./dto"
 import type { Repository } from "./repository-interface"
 
@@ -43,6 +46,8 @@ interface Store {
   huntSources: HuntSource[]
   huntMissions: HuntMission[]
   huntSearchQueries: SearchQuery[]
+  sourceOffers: SourceOffer[]
+  sourceOfferPriceHistory: SourceOfferPriceHistoryEntry[]
   settings: PricingSettings
 }
 
@@ -88,6 +93,8 @@ function seedStore(): Store {
     })),
     huntMissions: [],
     huntSearchQueries: [],
+    sourceOffers: [],
+    sourceOfferPriceHistory: [],
     settings: { ...DEFAULT_SETTINGS, updatedAt: now },
   }
 }
@@ -111,6 +118,8 @@ if (!store.huntSources || store.huntSources.length === 0) {
 }
 store.huntMissions ??= []
 store.huntSearchQueries ??= []
+store.sourceOffers ??= []
+store.sourceOfferPriceHistory ??= []
 globalForStore.__radarJkStore = store
 
 export const memoryRepo: Repository = {
@@ -304,5 +313,57 @@ export const memoryRepo: Repository = {
   },
   async deleteSearchQueriesForMission(missionId) {
     store.huntSearchQueries = store.huntSearchQueries.filter((q) => q.missionId !== missionId)
+  },
+
+  async listSourceOffers() {
+    return store.sourceOffers
+      .map((o) => ({ ...o }))
+      .sort((a, b) => (a.capturedAt < b.capturedAt ? 1 : -1))
+  },
+  async getSourceOffer(id) {
+    const found = store.sourceOffers.find((o) => o.id === id)
+    return found ? { ...found } : null
+  },
+  async findSourceOfferForDedupe(source, externalId, url) {
+    const found = store.sourceOffers.find((o) => {
+      if (o.source !== source) return false
+      if (externalId) return o.externalId === externalId
+      return o.externalId === null && o.url === url
+    })
+    return found ? { ...found } : null
+  },
+  async createSourceOffer(input: SourceOfferInput) {
+    const now = nowIso()
+    const offer: SourceOffer = { id: crypto.randomUUID(), ...input, createdAt: now, updatedAt: now }
+    store.sourceOffers.push(offer)
+    return { ...offer }
+  },
+  async updateSourceOffer(id, input) {
+    const idx = store.sourceOffers.findIndex((o) => o.id === id)
+    if (idx === -1) return null
+    store.sourceOffers[idx] = { ...store.sourceOffers[idx], ...input, updatedAt: nowIso() }
+    return { ...store.sourceOffers[idx] }
+  },
+  async deleteSourceOffer(id) {
+    store.sourceOffers = store.sourceOffers.filter((o) => o.id !== id)
+    store.sourceOfferPriceHistory = store.sourceOfferPriceHistory.filter((h) => h.offerId !== id)
+  },
+
+  async listSourceOfferPriceHistory(offerId) {
+    return store.sourceOfferPriceHistory
+      .filter((h) => h.offerId === offerId)
+      .map((h) => ({ ...h }))
+      .sort((a, b) => (a.capturedAt < b.capturedAt ? 1 : -1))
+  },
+  async addSourceOfferPriceHistory(offerId, price, shipping, capturedAt) {
+    const entry: SourceOfferPriceHistoryEntry = {
+      id: crypto.randomUUID(),
+      offerId,
+      price,
+      shipping,
+      capturedAt,
+    }
+    store.sourceOfferPriceHistory.push(entry)
+    return { ...entry }
   },
 }

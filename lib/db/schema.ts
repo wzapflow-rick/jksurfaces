@@ -1,6 +1,7 @@
 import {
   boolean,
   integer,
+  jsonb,
   numeric,
   pgTable,
   text,
@@ -182,6 +183,52 @@ export const huntSearchQueries = pgTable("hunt_search_queries", {
   type: text("type").notNull(),
   priority: integer("priority").notNull().default(0),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+})
+
+/**
+ * CAPTURA DE OFERTAS — Fase 6.1.
+ * Ofertas capturadas de fontes externas (por ora, só Chatuba). O matching com
+ * os produtos JK é persistido junto (status/confiança/método). Deduplicação
+ * por (source, external_id) e, na ausência de external_id, por (source, url).
+ */
+export const sourceOffers = pgTable("source_offers", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  source: text("source").notNull(),
+  externalId: text("external_id"),
+  productTitle: text("product_title").notNull(),
+  sku: text("sku"),
+  ean: text("ean"),
+  brand: text("brand"),
+  url: text("url").notNull(),
+  imageUrl: text("image_url"),
+  price: numeric("price", { precision: 12, scale: 2 }).notNull(),
+  shipping: numeric("shipping", { precision: 12, scale: 2 }),
+  availability: integer("availability"),
+  seller: text("seller"),
+  capturedAt: timestamp("captured_at", { withTimezone: true }).notNull().defaultNow(),
+  matchStatus: text("match_status").notNull().default("UNMATCHED"),
+  matchedProductId: uuid("matched_product_id").references(() => products.id, {
+    onDelete: "set null",
+  }),
+  matchConfidence: numeric("match_confidence", { precision: 4, scale: 3 }).notNull().default("0"),
+  matchMethod: text("match_method").notNull().default("UNKNOWN"),
+  rawData: jsonb("raw_data"),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+})
+
+/**
+ * Histórico de preço das ofertas capturadas. Uma nova entrada só é criada
+ * quando o preço (ou frete) muda entre capturas — sem registros duplicados.
+ */
+export const sourceOfferPriceHistory = pgTable("source_offer_price_history", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  offerId: uuid("offer_id")
+    .notNull()
+    .references(() => sourceOffers.id, { onDelete: "cascade" }),
+  price: numeric("price", { precision: 12, scale: 2 }).notNull(),
+  shipping: numeric("shipping", { precision: 12, scale: 2 }),
+  capturedAt: timestamp("captured_at", { withTimezone: true }).notNull().defaultNow(),
 })
 
 export const settings = pgTable("settings", {

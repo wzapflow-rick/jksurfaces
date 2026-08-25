@@ -8,6 +8,8 @@ import type {
   Product,
   RadarOpportunity,
   SearchQuery,
+  SourceOffer,
+  SourceOfferPriceHistoryEntry,
 } from "@/types"
 import type {
   BuyerInput,
@@ -19,6 +21,7 @@ import type {
   RadarOpportunityInput,
   SearchQueryInput,
   SettingsInput,
+  SourceOfferInput,
 } from "./dto"
 
 export interface Repository {
@@ -83,4 +86,26 @@ export interface Repository {
     inputs: SearchQueryInput[],
   ): Promise<SearchQuery[]>
   deleteSearchQueriesForMission(missionId: string): Promise<void>
+
+  // Captura de Ofertas (Fase 6.1) — ofertas capturadas de fontes externas
+  listSourceOffers(): Promise<SourceOffer[]>
+  getSourceOffer(id: string): Promise<SourceOffer | null>
+  /** Busca uma oferta existente para deduplicação (source+externalId, senão source+url). */
+  findSourceOfferForDedupe(
+    source: string,
+    externalId: string | null,
+    url: string,
+  ): Promise<SourceOffer | null>
+  createSourceOffer(input: SourceOfferInput): Promise<SourceOffer>
+  updateSourceOffer(id: string, input: Partial<SourceOfferInput>): Promise<SourceOffer | null>
+  deleteSourceOffer(id: string): Promise<void>
+
+  // Captura de Ofertas (Fase 6.1) — histórico de preço
+  listSourceOfferPriceHistory(offerId: string): Promise<SourceOfferPriceHistoryEntry[]>
+  addSourceOfferPriceHistory(
+    offerId: string,
+    price: number,
+    shipping: number | null,
+    capturedAt: string,
+  ): Promise<SourceOfferPriceHistoryEntry>
 }

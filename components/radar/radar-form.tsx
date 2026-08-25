@@ -24,6 +24,9 @@ export interface RadarPrefill {
   source?: RadarSource
   salePrice?: number
   missionId?: string
+  /** Fase 6.1: prefill vindo de uma oferta capturada. */
+  url?: string
+  announcedPrice?: number
 }
 
 const SOURCES: { value: string; label: string }[] = [
@@ -65,7 +68,9 @@ export function RadarForm({
   const [result, setResult] = useState<ActionResult | null>(null)
 
   // Estado da prévia ao vivo.
-  const [announcedPrice, setAnnouncedPrice] = useState(opportunity?.announcedPrice ?? 0)
+  const [announcedPrice, setAnnouncedPrice] = useState(
+    opportunity?.announcedPrice ?? prefill?.announcedPrice ?? 0,
+  )
   const [shipping, setShipping] = useState(opportunity?.shipping ?? 0)
   const [otherCosts, setOtherCosts] = useState(opportunity?.otherCosts ?? 0)
   const [salePrice, setSalePrice] = useState(opportunity?.salePrice ?? prefill?.salePrice ?? 0)
@@ -142,7 +147,7 @@ export function RadarForm({
                 id="url"
                 name="url"
                 type="url"
-                defaultValue={opportunity?.url ?? ""}
+                defaultValue={opportunity?.url ?? prefill?.url ?? ""}
                 placeholder="https://"
               />
             </Field>
@@ -164,7 +169,7 @@ export function RadarForm({
                 type="number"
                 step="0.01"
                 min="0"
-                defaultValue={opportunity?.announcedPrice ?? ""}
+                defaultValue={opportunity?.announcedPrice ?? prefill?.announcedPrice ?? ""}
                 onChange={(e) => setAnnouncedPrice(Number(e.target.value) || 0)}
                 placeholder="0,00"
                 required
