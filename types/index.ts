@@ -344,6 +344,22 @@ export type MatchMethod =
 export type MatchStatus = "MATCHED" | "REVIEW" | "UNMATCHED"
 
 /**
+ * Condição do item, normalizada para o padrão interno (Fase 6.3):
+ *  - NEW ...... novo / lacrado / na caixa;
+ *  - USED ..... usado / seminovo / já instalado;
+ *  - UNKNOWN .. sem sinal claro OU sinais conflitantes (vai para revisão).
+ */
+export type OfferCondition = "NEW" | "USED" | "UNKNOWN"
+
+/**
+ * Origem de um campo de uma oferta importada (Fase 6.3), para a revisão humana:
+ *  - EXTRACTED .. o parser reconheceu o valor no anúncio;
+ *  - EDITED ..... o usuário corrigiu/digitou manualmente;
+ *  - MISSING .... não identificado (inclui quantidade assumida como 1).
+ */
+export type FieldOrigin = "EXTRACTED" | "EDITED" | "MISSING"
+
+/**
  * Oferta capturada e normalizada de uma fonte externa. Guarda apenas os dados
  * necessários para análise — nunca HTML completo. `rawData` mantém um resumo
  * mínimo dos campos brutos úteis (não a página inteira).
@@ -359,6 +375,7 @@ export interface SourceOffer {
   brand: string | null
   url: string
   imageUrl: string | null
+  /** Preço TOTAL anunciado. Para captura da Chatuba já é o preço unitário. */
   price: number
   shipping: number | null
   /** Quantidade disponível informada pela fonte (null = desconhecida). */
@@ -366,6 +383,25 @@ export interface SourceOffer {
   seller: string | null
   /** Momento da captura (ISO). */
   capturedAt: string
+  /* ---- Importação inteligente (Fase 6.3) ---- */
+  /** Unidades do anúncio (lote). 1 = unidade avulsa. */
+  quantity: number
+  /**
+   * Preço por unidade = price / quantity. É o valor que o motor financeiro usa
+   * na comparação com o preço de venda JK. null = usar `price` diretamente.
+   */
+  unitPrice: number | null
+  /** true quando o anúncio é um lote (quantity > 1). */
+  isLot: boolean
+  condition: OfferCondition | null
+  /** Preço negociável sinalizado no anúncio (não altera o preço). */
+  priceNegotiable: boolean
+  /** Localização "Cidade - UF" quando informada. */
+  location: string | null
+  /** Observações livres da importação. */
+  notes: string | null
+  /** Origem por campo (auditoria da importação): extraído / editado / ausente. */
+  fieldOrigins: Record<string, FieldOrigin> | null
   /* ---- Matching persistido ---- */
   matchStatus: MatchStatus
   matchedProductId: string | null

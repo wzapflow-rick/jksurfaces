@@ -334,7 +334,21 @@ export const memoryRepo: Repository = {
   },
   async createSourceOffer(input: SourceOfferInput) {
     const now = nowIso()
-    const offer: SourceOffer = { id: crypto.randomUUID(), ...input, createdAt: now, updatedAt: now }
+    const offer: SourceOffer = {
+      id: crypto.randomUUID(),
+      ...input,
+      // Padrões seguros dos campos de importação (Fase 6.3) quando ausentes.
+      quantity: input.quantity ?? 1,
+      unitPrice: input.unitPrice ?? null,
+      isLot: input.isLot ?? false,
+      condition: input.condition ?? null,
+      priceNegotiable: input.priceNegotiable ?? false,
+      location: input.location ?? null,
+      notes: input.notes ?? null,
+      fieldOrigins: input.fieldOrigins ?? null,
+      createdAt: now,
+      updatedAt: now,
+    }
     store.sourceOffers.push(offer)
     return { ...offer }
   },

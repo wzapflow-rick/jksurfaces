@@ -218,10 +218,31 @@ export const SEARCH_QUERY_TYPE_META: Record<
 
 export const OFFER_SOURCE_META: Record<string, { label: string }> = {
   CHATUBA: { label: "Chatuba" },
+  OLX: { label: "OLX" },
 }
 
 export function offerSourceLabel(source: string): string {
   return OFFER_SOURCE_META[source]?.label ?? source
+}
+
+/** Condição do item importado (Fase 6.3) — rótulo e cor de badge. */
+export const OFFER_CONDITION_META: Record<string, { label: string; tone: string }> = {
+  NEW: { label: "Novo", tone: "border-status-go/30 bg-status-go/10 text-status-go" },
+  USED: { label: "Usado", tone: "border-status-watch/30 bg-status-watch/10 text-status-watch" },
+  UNKNOWN: { label: "Condição a revisar", tone: "border-border-strong bg-muted text-muted-foreground" },
+}
+
+/**
+ * Mapeia uma string de fonte de oferta (CHATUBA/OLX…) para o enum de fonte do
+ * Radar (Fase 3), usado ao montar o link "Analisar no Radar".
+ */
+export function offerSourceToRadarSource(source: string): RadarSource {
+  const s = source.trim().toUpperCase()
+  if (s === "OLX") return "OLX"
+  if (s === "CHATUBA") return "CHATUBA"
+  if (s === "MERCADO_LIVRE") return "MERCADO_LIVRE"
+  if (s === "MARKETPLACE") return "MARKETPLACE"
+  return "OUTRO"
 }
 
 export const MATCH_STATUS_META: Record<MatchStatus, { label: string; tone: string; dot: string }> = {

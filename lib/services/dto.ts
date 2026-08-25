@@ -1,11 +1,13 @@
 import type {
   AcquisitionStatus,
   CommercialPriority,
+  FieldOrigin,
   HuntPriority,
   HuntSourceType,
   HuntStatus,
   MatchMethod,
   MatchStatus,
+  OfferCondition,
   RadarSource,
   RadarStatus,
   SearchQueryType,
@@ -108,7 +110,11 @@ export interface SearchQueryInput {
   priority: number
 }
 
-/** Entrada de uma oferta capturada a persistir (Fase 6.1). */
+/**
+ * Entrada de uma oferta capturada a persistir (Fase 6.1). Os campos de
+ * importação (Fase 6.3) são OPCIONAIS: a captura automática da Chatuba não os
+ * envia e os repositórios aplicam padrões seguros (quantity=1, isLot=false…).
+ */
 export interface SourceOfferInput {
   source: string
   externalId: string | null
@@ -128,6 +134,15 @@ export interface SourceOfferInput {
   matchConfidence: number
   matchMethod: MatchMethod
   rawData: Record<string, unknown> | null
+  /* ---- Importação inteligente (Fase 6.3), opcionais ---- */
+  quantity?: number
+  unitPrice?: number | null
+  isLot?: boolean
+  condition?: OfferCondition | null
+  priceNegotiable?: boolean
+  location?: string | null
+  notes?: string | null
+  fieldOrigins?: Record<string, FieldOrigin> | null
 }
 
 export const DEFAULT_SETTINGS = {

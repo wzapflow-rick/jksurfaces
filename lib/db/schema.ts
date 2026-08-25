@@ -206,6 +206,15 @@ export const sourceOffers = pgTable("source_offers", {
   availability: integer("availability"),
   seller: text("seller"),
   capturedAt: timestamp("captured_at", { withTimezone: true }).notNull().defaultNow(),
+  // Importação inteligente de anúncios (Fase 6.3).
+  quantity: integer("quantity").notNull().default(1),
+  unitPrice: numeric("unit_price", { precision: 12, scale: 2 }),
+  isLot: boolean("is_lot").notNull().default(false),
+  condition: text("condition"),
+  priceNegotiable: boolean("price_negotiable").notNull().default(false),
+  location: text("location"),
+  notes: text("notes"),
+  fieldOrigins: jsonb("field_origins"),
   matchStatus: text("match_status").notNull().default("UNMATCHED"),
   matchedProductId: uuid("matched_product_id").references(() => products.id, {
     onDelete: "set null",

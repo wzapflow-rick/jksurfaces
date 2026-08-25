@@ -4,6 +4,7 @@ import type {
   Buyer,
   BuyerProduct,
   CommercialPriority,
+  FieldOrigin,
   HuntMission,
   HuntPriority,
   HuntSource,
@@ -12,6 +13,7 @@ import type {
   MatchMethod,
   MatchStatus,
   Offer,
+  OfferCondition,
   PricingSettings,
   Product,
   RadarOpportunity,
@@ -253,6 +255,14 @@ function mapSourceOffer(row: SourceOfferRow): SourceOffer {
     availability: row.availability,
     seller: row.seller,
     capturedAt: iso(row.capturedAt),
+    quantity: row.quantity ?? 1,
+    unitPrice: num(row.unitPrice),
+    isLot: row.isLot ?? false,
+    condition: (row.condition as OfferCondition | null) ?? null,
+    priceNegotiable: row.priceNegotiable ?? false,
+    location: row.location,
+    notes: row.notes,
+    fieldOrigins: (row.fieldOrigins as Record<string, FieldOrigin> | null) ?? null,
     matchStatus: row.matchStatus as MatchStatus,
     matchedProductId: row.matchedProductId,
     matchConfidence: num(row.matchConfidence) ?? 0,
@@ -278,6 +288,14 @@ function sourceOfferValues(input: Partial<SourceOfferInput>) {
   if (input.availability !== undefined) values.availability = input.availability
   if (input.seller !== undefined) values.seller = input.seller
   if (input.capturedAt !== undefined) values.capturedAt = new Date(input.capturedAt)
+  if (input.quantity !== undefined) values.quantity = input.quantity
+  if (input.unitPrice !== undefined) values.unitPrice = input.unitPrice === null ? null : String(input.unitPrice)
+  if (input.isLot !== undefined) values.isLot = input.isLot
+  if (input.condition !== undefined) values.condition = input.condition
+  if (input.priceNegotiable !== undefined) values.priceNegotiable = input.priceNegotiable
+  if (input.location !== undefined) values.location = input.location
+  if (input.notes !== undefined) values.notes = input.notes
+  if (input.fieldOrigins !== undefined) values.fieldOrigins = input.fieldOrigins
   if (input.matchStatus !== undefined) values.matchStatus = input.matchStatus
   if (input.matchedProductId !== undefined) values.matchedProductId = input.matchedProductId
   if (input.matchConfidence !== undefined) values.matchConfidence = String(input.matchConfidence)

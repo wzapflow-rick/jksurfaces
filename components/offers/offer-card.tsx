@@ -1,7 +1,14 @@
+import type { ComponentType, ReactNode } from "react"
 import Link from "next/link"
-import { ExternalLink, ImageOff, Target } from "lucide-react"
+import { ExternalLink, ImageOff, Layers, MapPin, Target, Tag } from "lucide-react"
 import type { SourceOfferWithMetrics } from "@/types"
-import { formatBRL, formatDate, offerSourceLabel } from "@/lib/utils"
+import {
+  formatBRL,
+  formatDate,
+  OFFER_CONDITION_META,
+  offerSourceLabel,
+  offerSourceToRadarSource,
+} from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { RadarClassificationBadge } from "@/components/radar/radar-classification-badge"
 import { RadarRecommendationBadge } from "@/components/radar/radar-recommendation-badge"
@@ -11,15 +18,19 @@ import { OfferDeleteButton } from "./offer-delete-button"
 /**
  * Monta o link "Analisar no Radar" a partir de uma oferta capturada, levando
  * todos os dados possíveis via query params (a análise definitiva é sempre no
- * motor do Radar — este card só exibe a prévia).
+ * motor do Radar — este card só exibe a prévia). Usa o PREÇO UNITÁRIO como
+ * preço anunciado no Radar (é o valor que o motor financeiro compara).
  */
 export function buildRadarHref(offer: SourceOfferWithMetrics, missionId?: string): string {
+  const unit = offer.unitPrice ?? offer.price
   const params = new URLSearchParams({
     name: offer.productTitle,
-    source: "CHATUBA",
-    url: offer.url,
-    announcedPrice: String(offer.price),
+    source: offerSourceToRadarSource(offer.source),
+    url: offer.url.startsWith("http") ? offer.url : "",
+    announcedPrice: String(unit),
   })
+  if (offer.shipping !== null) params.set("shipping", String(offer.shipping))
+  if (offer.quantity > 1) params.set("availableQty", String(offer.quantity))
   if (offer.sku) params.set("sku", offer.sku)
   if (offer.brand) params.set("brand", offer.brand)
   if (offer.metrics) params.set("salePrice", String(offer.metrics.salePrice))
@@ -74,15 +85,37 @@ export function OfferCard({
             <span className="font-mono text-lg font-semibold tabular-nums text-foreground">
               {formatBRL(offer.price)}
             </span>
+            {offer.isLot ? (
+              <span className="text-[11px] text-muted-foreground">
+                · {formatBRL(offer.unitPrice ?? offer.price)}/un
+              </span>
+            ) : null}
             {offer.shipping !== null ? (
               <span className="text-[11px] text-muted-foreground">
                 + {formatBRL(offer.shipping)} frete
               </span>
             ) : null}
-            {offer.availability !== null ? (
-              <span className="text-[11px] text-muted-foreground">
-                · {offer.availability > 0 ? `${offer.availability} disp.` : "indisponível"}
-              </span>
+          </div>
+          <div className="mt-1 flex flex-wrap items-center gap-1.5 text-[10px]">
+            {offer.isLot ? (
+              <Badge tone="border-primary/30 bg-primary/10 text-primary" icon={Layers}>
+                Lote · {offer.quantity} un
+              </Badge>
+            ) : null}
+            {offer.condition ? (
+              <Badge tone={OFFER_CONDITION_META[offer.condition]?.tone ?? ""} icon={Tag}>
+                {OFFER_CONDITION_META[offer.condition]?.label ?? offer.condition}
+              </Badge>
+            ) : null}
+            {offer.priceNegotiable ? (
+              <Badge tone="border-status-watch/30 bg-status-watch/10 text-status-watch">
+                Negociável
+              </Badge>
+            ) : null}
+            {offer.location ? (
+              <Badge tone="border-border-strong bg-surface-2 text-muted-foreground" icon={MapPin}>
+                {offer.location}
+              </Badge>
             ) : null}
           </div>
         </div>
@@ -135,12 +168,14 @@ export function OfferCard({
         <span className="text-[10px] text-muted-foreground">Capturado {formatDate(offer.capturedAt)}</span>
         <div className="flex items-center gap-2">
           {showDelete ? <OfferDeleteButton id={offer.id} /> : null}
-          <a href={offer.url} target="_blank" rel="noopener noreferrer">
-            <Button variant="secondary" size="sm">
-              Abrir
-              <ExternalLink className="h-3.5 w-3.5" />
-            </Button>
-          </a>
+          {offer.url.startsWith("http") ? (
+            <a href={offer.url} target="_blank" rel="noopener noreferrer">
+              <Button variant="secondary" size="sm">
+                Abrir
+                <ExternalLink className="h-3.5 w-3.5" />
+              </Button>
+            </a>
+          ) : null}
           <Link href={buildRadarHref(offer, missionId)}>
             <Button size="sm">
               <Target className="h-3.5 w-3.5" />
@@ -150,6 +185,25 @@ export function OfferCard({
         </div>
       </div>
     </article>
+  )
+}
+
+function Badge({
+  children,
+  tone,
+  icon: Icon,
+}: {
+  children: ReactNode
+  tone: string
+  icon?: ComponentType<{ className?: string }>
+}) {
+  return (
+    <span
+      className={`inline-flex items-center gap-1 rounded border px-1.5 py-0.5 font-medium ${tone}`}
+    >
+      {Icon ? <Icon className="size-3" /> : null}
+      {children}
+    </span>
   )
 }
 

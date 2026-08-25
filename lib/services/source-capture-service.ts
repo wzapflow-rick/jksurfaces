@@ -210,9 +210,13 @@ export function attachMetrics(
   const byId = new Map(products.map((p) => [p.id, p]))
   return offers.map((offer) => {
     const product = offer.matchedProductId ? byId.get(offer.matchedProductId) ?? null : null
+    // O motor financeiro compara SEMPRE o preço por unidade. Na captura da
+    // Chatuba unitPrice é null e cai no price (sem alterar o resultado); em
+    // importações de lote da OLX usa o preço unitário derivado.
+    const effectivePrice = offer.unitPrice ?? offer.price
     const metrics =
       product && product.priceB2B > 0
-        ? computeOfferMetrics(offer.price, offer.shipping, product.priceB2B)
+        ? computeOfferMetrics(effectivePrice, offer.shipping, product.priceB2B)
         : null
     return { ...offer, product, metrics }
   })
