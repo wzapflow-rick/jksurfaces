@@ -1,11 +1,7 @@
 import "server-only"
-import type { OfferSource, Product } from "@/types"
+import type { OfferSource, OfferMatchResult, Product } from "@/types"
 import type { NormalizedOffer } from "@/lib/sources/types"
-import {
-  matchOfferToProduct,
-  type MatchCandidate,
-  type OfferMatchResult,
-} from "@/lib/calculations/offer-matching"
+import { matchOfferToProduct, type MatchCandidate } from "@/lib/calculations/offer-matching"
 import { round2 } from "@/lib/calculations/pricing"
 import { unitPrice } from "@/lib/sources/olx-parsers"
 import {

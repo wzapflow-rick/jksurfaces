@@ -1,6 +1,6 @@
 import Link from "next/link"
 import { notFound } from "next/navigation"
-import { ArrowLeft, ExternalLink, Pencil, Search, Target } from "lucide-react"
+import { ArrowLeft, ExternalLink, Import, Pencil, Search, Target } from "lucide-react"
 import {
   getHuntMissionWithMetrics,
   buildSourceLinks,
@@ -191,15 +191,23 @@ export default async function MissaoDetailPage({
         <div>
           <h2 className="text-sm font-semibold tracking-tight text-foreground">Encontrou o produto?</h2>
           <p className="mt-1 text-sm text-muted-foreground">
-            Registre como oportunidade no Radar JK para calcular o resultado exato com o preço real.
+            Importe um anúncio da OLX para extrair os dados automaticamente, ou registre direto no Radar.
           </p>
         </div>
-        <Link href={`/radar/novo?${foundParams.toString()}`} className="shrink-0">
-          <Button size="sm">
-            <Target className="h-4 w-4" />
-            Encontrei — analisar no Radar
-          </Button>
-        </Link>
+        <div className="flex shrink-0 flex-col gap-2 sm:flex-row">
+          <Link href={`/importar?${foundParams.toString()}`} className="shrink-0">
+            <Button size="sm" variant="secondary">
+              <Import className="h-4 w-4" />
+              Importar da OLX
+            </Button>
+          </Link>
+          <Link href={`/radar/novo?${foundParams.toString()}`} className="shrink-0">
+            <Button size="sm">
+              <Target className="h-4 w-4" />
+              Encontrei — analisar no Radar
+            </Button>
+          </Link>
+        </div>
       </section>
 
       {mission.notes ? (

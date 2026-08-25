@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { LayoutDashboard, Package, Users, Crosshair, Settings, Radar, ScanSearch, Target, Store } from "lucide-react"
+import { LayoutDashboard, Package, Users, Crosshair, Settings, Radar, ScanSearch, Target, Store, Import } from "lucide-react"
 import { cn } from "@/lib/utils"
 
 const NAV = [
@@ -14,6 +14,7 @@ const NAV = [
   { href: "/radar", label: "Radar JK", icon: ScanSearch },
   { href: "/caca", label: "Central de Caça", icon: Target },
   { href: "/ofertas", label: "Ofertas capturadas", icon: Store },
+  { href: "/importar", label: "Importar anúncio", icon: Import },
   { href: "/configuracoes", label: "Configurações", icon: Settings },
 ]
 
