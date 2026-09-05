@@ -1,6 +1,7 @@
 import Image from 'next/image'
 import { CategoryRail } from '@/components/category-rail'
 import { FeaturedProducts } from '@/components/featured-products'
+import { HeroCinematic } from '@/components/hero-cinematic'
 import { SiteHeader } from '@/components/site-header'
 
 const logo = 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/JK%20Logo%20OK-AeCRffSQ2waJkiJgmYXrq3SDUIQWzD.png'
@@ -18,18 +19,7 @@ export default function Home() {
   return (
     <main id="top" className="overflow-hidden">
       <SiteHeader />
-      <section className="relative flex min-h-[92vh] items-end px-5 pb-14 pt-36 md:px-10 md:pb-20" aria-labelledby="hero-title">
-        <Image src={hero} alt="Interior contemporâneo com metais e superfícies naturais" fill priority className="object-cover object-center" sizes="100vw" />
-        <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/35 to-ink/15" />
-        <div className="relative mx-auto w-full max-w-7xl reveal-up">
-          <p className="eyebrow mb-5">Metais · acabamentos · design · soluções</p>
-          <h1 id="hero-title" className="display max-w-4xl text-6xl leading-[.87] text-paper md:text-9xl">Detalhes que<br /><em className="text-champagne">definem</em> espaços.</h1>
-          <div className="mt-10 flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
-            <p className="max-w-sm text-sm leading-6 text-paper/65">Uma curadoria precisa para transformar matéria em presença. A JK SURFACES aproxima o design daquilo que você toca todos os dias.</p>
-            <a href="#curadoria" className="magnetic w-fit border border-champagne px-6 py-4 text-[10px] uppercase tracking-[.24em] text-champagne transition-colors hover:bg-champagne hover:text-ink">Explorar produtos →</a>
-          </div>
-        </div>
-      </section>
+      <HeroCinematic image={hero} />
 
       <section id="essencia" className="texture border-y border-white/10 px-5 py-28 md:px-10 md:py-40" aria-labelledby="essencia-title">
         <div className="mx-auto grid max-w-7xl gap-12 md:grid-cols-[.8fr_1.2fr] md:items-end">
