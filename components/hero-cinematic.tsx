@@ -71,7 +71,7 @@ export function HeroCinematic() {
         <div className="absolute inset-0 opacity-70 [background-image:linear-gradient(rgba(242,241,236,.04)_1px,transparent_1px),linear-gradient(90deg,rgba(242,241,236,.04)_1px,transparent_1px)] [background-size:72px_72px]" />
         <header className="relative z-20 flex items-start justify-between" aria-label="Navegação principal">
           <a href="#top" aria-label="JK Surfaces — início" className="text-paper"><span className="display block text-4xl leading-none">JK</span><span className="mt-1 block text-[8px] tracking-[.48em] text-paper/60">SURFACES</span></a>
-          <nav className="hidden items-center gap-7 pt-2 text-[9px] uppercase tracking-[.25em] text-paper/55 md:flex"><a href="/produtos" className="transition-colors hover:text-champagne">Produtos</a><a href="#curadoria" className="transition-colors hover:text-champagne">Curadoria</a><a href="#projetos" className="transition-colors hover:text-champagne">Sobre</a><a href="#contato" className="transition-colors hover:text-champagne">Contato</a></nav>
+          <nav className="hidden items-center gap-7 pt-2 text-[9px] uppercase tracking-[.25em] text-paper/55 md:flex"><a href="/produtos" className="transition-colors hover:text-champagne">Produtos</a><a href="#curadoria" className="transition-colors hover:text-champagne">Curadoria</a><a href="#processo" className="transition-colors hover:text-champagne">Processo</a><a href="#contato" className="transition-colors hover:text-champagne">Contato</a></nav>
           <span className="font-mono text-[9px] tracking-[.2em] text-paper/35 md:hidden">JK / 001</span>
         </header>
 
