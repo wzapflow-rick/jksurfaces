@@ -20,6 +20,15 @@ body { margin: 0; background: var(--ink); color: var(--paper); font-family: var(
 .reveal-up { animation: reveal-up .9s cubic-bezier(.2,.7,.2,1) both; }
 @keyframes reveal-up { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 .hero-photo { transition: transform 900ms cubic-bezier(.2,.7,.2,1); will-change: transform; }
+.hero-atelier { background: var(--ink); }
+.hero-atelier-grid { isolation: isolate; }
+.hero-atelier-copy { background: linear-gradient(135deg, #080b0f 0%, #10161b 100%); }
+.hero-atelier-media { min-height: 28rem; }
+.hero-atelier-media::after { position: absolute; inset: 1rem; border: 1px solid rgba(242,241,236,.22); content: ''; pointer-events: none; }
+.hero-atelier-emphasis { font-style: italic; }
+.hero-atelier-stamp { writing-mode: vertical-rl; }
+@media (max-width: 767px) { .hero-atelier-media { min-height: 22rem; } .hero-atelier-media::after { inset: .75rem; } }
+
 .product-zoom canvas { transition: filter 500ms ease; }
 .product-zoom:hover canvas { filter: brightness(1.04); }
 @media (hover: none) { .product-zoom canvas { pointer-events: none; } .product-zoom > span:last-child { display: none; } }
@@ -29,6 +38,9 @@ body { margin: 0; background: var(--ink); color: var(--paper); font-family: var(
 .hero-strip-a { left: 0; animation-delay: 620ms; }.hero-strip-b { left: 17%; animation-delay: 680ms; }.hero-strip-c { left: 34%; animation-delay: 740ms; }.hero-strip-d { left: 51%; animation-delay: 800ms; }.hero-strip-e { left: 68%; animation-delay: 860ms; }.hero-strip-f { right: 0; animation-delay: 920ms; }
 .hero-copy { position: relative; z-index: 3; opacity: 0; animation: copy-in 600ms cubic-bezier(.2,.7,.2,1) forwards; }
 .hero-copy-eyebrow { animation-delay: 1120ms; }.hero-copy-title { animation-delay: 1260ms; }.hero-copy-support { animation-delay: 1480ms; }
+.hero-atelier-copy .hero-copy-title { animation-delay: 1260ms; }
+.hero-atelier-media { animation: media-in 1200ms 720ms cubic-bezier(.2,.7,.2,1) both; }
+@keyframes media-in { from { opacity: 0; transform: scale(1.04); } to { opacity: 1; transform: scale(1); } }
 .hero-title-line { display: block; overflow: hidden; padding-bottom: .08em; }.hero-title-line > * { display: inline-block; transform: translateY(110%); animation: title-reveal 780ms 1260ms cubic-bezier(.2,.75,.2,1) forwards; }.hero-title-line + .hero-title-line > * { animation-delay: 1340ms; }
 .hero-scroll-mark { position: absolute; z-index: 3; right: 2.5rem; bottom: 2.5rem; width: 1px; height: 42px; background: linear-gradient(to bottom, transparent, var(--champagne)); animation: scroll-mark 2.4s 2200ms ease-in-out infinite; opacity: 0; }
 @keyframes opening-clear { to { opacity: 0; visibility: hidden; } }
@@ -38,4 +50,4 @@ body { margin: 0; background: var(--ink); color: var(--paper); font-family: var(
 @keyframes title-reveal { to { transform: translateY(0); } }
 @keyframes scroll-mark { 0%, 100% { opacity: .25; transform: scaleY(.75); transform-origin: top; } 50% { opacity: .8; transform: scaleY(1); transform-origin: top; } }
 @media (max-width: 767px) { .product-card, .product-card:nth-child(2), .product-card:nth-child(3), .product-card:nth-child(4) { position: relative; top: auto; } .hero-scroll-mark { right: 1.5rem; bottom: 1.75rem; } }
-@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; transition-duration: .01ms !important; } .hero-opening { display: none; } .hero-copy, .hero-title-line > * { opacity: 1; transform: none; animation: none; } .hero-photo { transition: none; } .hero-scroll-mark { animation: none; opacity: .45; } }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; transition-duration: .01ms !important; } .hero-opening { display: none; } .hero-copy, .hero-title-line > * { opacity: 1; transform: none; animation: none; } .hero-photo { transition: none; } .hero-atelier-media { animation: none; } .hero-scroll-mark { animation: none; opacity: .45; } }
