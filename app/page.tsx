@@ -4,7 +4,7 @@ import { FeaturedProducts } from '@/components/featured-products'
 import { HeroCinematic } from '@/components/hero-cinematic'
 
 const logo = 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/JK%20Logo%20OK-AeCRffSQ2waJkiJgmYXrq3SDUIQWzD.png'
-const hero = 'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=2200&q=88'
+const hero = 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/ChatGPT%20Image%205%20de%20set.%20de%202026%2C%2000_34_58-pi4LDn3Qhc74q5b8CaG8pHs8Qicnzu.png'
 const categories = [
   { name: 'Torneiras', image: 'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&w=900&q=85' },
   { name: 'Misturadores', image: 'https://images.unsplash.com/photo-1552321554-5fefe8c9ef14?auto=format&fit=crop&w=900&q=85' },
