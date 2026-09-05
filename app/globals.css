@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 :root { --ink: #080b0f; --surface: #11161b; --paper: #f2f1ec; --muted: #a8aaa7; --line: rgba(242,241,236,.18); --champagne: #c7b79b; --steel: #8ea0a6; }
-@theme inline { --color-background: var(--ink); --color-foreground: var(--paper); --font-sans: var(--font-geist); --font-serif: var(--font-cormorant); }
+@theme inline { --color-ink: var(--ink); --color-surface: var(--surface); --color-paper: var(--paper); --color-muted: var(--muted); --color-champagne: var(--champagne); --color-steel: var(--steel); --color-background: var(--ink); --color-foreground: var(--paper); --font-sans: var(--font-geist); --font-serif: var(--font-cormorant); }
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; background: var(--ink); }
 body { margin: 0; background: var(--ink); color: var(--paper); font-family: var(--font-geist), Arial, sans-serif; }
@@ -10,4 +10,14 @@ body { margin: 0; background: var(--ink); color: var(--paper); font-family: var(
 .display { font-family: var(--font-cormorant), Georgia, serif; font-weight: 300; }
 .eyebrow { color: var(--champagne); font-size: 10px; letter-spacing: .28em; text-transform: uppercase; }
 .texture { background-image: linear-gradient(rgba(242,241,236,.025) 1px, transparent 1px), linear-gradient(90deg, rgba(242,241,236,.025) 1px, transparent 1px); background-size: 48px 48px; }
+.category-rail { scrollbar-width: thin; scrollbar-color: var(--champagne) transparent; touch-action: pan-y; }
+.category-rail::-webkit-scrollbar { height: 2px; }
+.category-rail::-webkit-scrollbar-thumb { background: var(--champagne); }
+.product-card { position: sticky; top: 8rem; }
+.product-card:nth-child(2) { top: 9rem; }
+.product-card:nth-child(3) { top: 10rem; }
+.product-card:nth-child(4) { top: 11rem; }
+.reveal-up { animation: reveal-up .9s cubic-bezier(.2,.7,.2,1) both; }
+@keyframes reveal-up { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+@media (max-width: 767px) { .product-card, .product-card:nth-child(2), .product-card:nth-child(3), .product-card:nth-child(4) { position: relative; top: auto; } }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; transition-duration: .01ms !important; } }
