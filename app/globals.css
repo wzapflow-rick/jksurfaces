@@ -22,6 +22,22 @@ body { margin: 0; background: var(--ink); color: var(--paper); font-family: var(
 .hero-photo { transition: transform 900ms cubic-bezier(.2,.7,.2,1); will-change: transform; }
 .hero-atelier { background: var(--ink); }
 .hero-build { background: radial-gradient(ellipse at 52% 46%, #1a1b1c 0%, var(--ink) 48%, #050607 100%); }
+.hero-part { position: absolute; left: 50%; top: 50%; transform-origin: center; will-change: transform; transition: transform 70ms linear; }
+.hero-part-handle { width: 9rem; height: 2.2rem; margin: -13.5rem 0 0 -4rem; border-radius: 1.3rem 1.3rem .55rem .55rem; background: linear-gradient(145deg, #f3d3a0, #a87542 42%, #f0cb91 72%, #654225); box-shadow: inset 0 1px 1px rgba(255,255,255,.55), 0 14px 25px rgba(0,0,0,.35); }
+.hero-part-handle span { position: absolute; left: 0; top: -.3rem; width: 2.1rem; height: 2.5rem; border-radius: 1rem .9rem .3rem .3rem; background: linear-gradient(90deg, #845c36, #f0cf9d 50%, #956539); }
+.hero-part-screw { width: .45rem; height: 2.4rem; margin: -10.4rem 0 0 -.2rem; border-radius: .25rem; background: linear-gradient(90deg, #555, #ddd 42%, #333); }
+.hero-part-ring { width: 3.5rem; height: .8rem; margin-left: -1.75rem; border: .25rem solid #b88a57; border-radius: 50%; background: transparent; box-shadow: 0 3px 12px rgba(0,0,0,.4); }
+.hero-part-ring-one { margin-top: -8.3rem; }.hero-part-ring-two { margin-top: -4.5rem; border-color: #e1d6c0; }
+.hero-part-cartridge { width: 3.5rem; height: 4.8rem; margin: -6.7rem 0 0 -1.75rem; border-radius: .8rem .8rem 1rem 1rem; background: linear-gradient(90deg, #062e5e, #1870c6 48%, #08264b); box-shadow: inset 0 0 0 .2rem rgba(255,255,255,.12); }
+.hero-part-cartridge span { position: absolute; left: 1.15rem; top: -1.7rem; width: 1.15rem; height: 2rem; border-radius: .35rem; background: #ebe5d8; }
+.hero-part-body { width: 7rem; height: 13rem; margin: -1.3rem 0 0 -3.5rem; border-radius: 2.3rem 2.3rem 1.5rem 1.5rem; background: linear-gradient(90deg, #82572f, #f1c88e 32%, #bc8750 62%, #5f3b20); box-shadow: inset 1px 0 rgba(255,255,255,.5), 0 20px 30px rgba(0,0,0,.38); }
+.hero-part-body span { position: absolute; top: 3rem; right: -9.4rem; width: 11rem; height: 2.8rem; border-radius: .45rem 2rem 2rem .45rem; transform: rotate(12deg); background: linear-gradient(180deg, #f0c994, #a16b3b 65%, #5e3b22); }
+.hero-part-collar { width: 8.6rem; height: 1.1rem; margin: 11.8rem 0 0 -4.3rem; border: .25rem solid #b7ae9d; border-radius: 50%; background: #101112; }
+.hero-part-thread { width: 4.4rem; height: 3.7rem; margin: 12.8rem 0 0 -2.2rem; border-radius: .4rem; background: repeating-linear-gradient(180deg, #f0c38b 0 3px, #6f4829 3px 6px); }
+.hero-part-washer { width: 6rem; height: .85rem; margin: 17rem 0 0 -3rem; border: .25rem solid #555; border-radius: 50%; background: #111; }
+.hero-part-hoses { width: 4.5rem; height: 8rem; margin: 17.8rem 0 0 -2.25rem; border-left: .6rem solid #b6c1c5; border-right: .6rem solid #8a989d; border-radius: 40%; transform: rotate(-4deg); background: repeating-linear-gradient(135deg, #eef2f1 0 3px, #6f7a7d 3px 6px); }
+.hero-part-hoses span, .hero-part-hoses i { position: absolute; bottom: -1.5rem; width: 1.2rem; height: 2rem; border-radius: .2rem; background: #d1a06a; }.hero-part-hoses span { left: -.7rem; }.hero-part-hoses i { right: -.7rem; }
+@media (max-width: 767px) { .hero-part-handle { transform: scale(.75); } .hero-part-body { transform: scale(.72); } .hero-part-body span { transform: rotate(12deg) scale(.9); } }
 .hero-build-object { filter: drop-shadow(0 24px 30px rgba(0,0,0,.42)); }
 .hero-build-piece { will-change: transform, opacity; transition: opacity 180ms linear; }
 .hero-build-glow { transition: opacity 400ms ease; }

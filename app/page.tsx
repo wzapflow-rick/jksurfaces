@@ -4,7 +4,6 @@ import { FeaturedProducts } from '@/components/featured-products'
 import { HeroCinematic } from '@/components/hero-cinematic'
 
 const logo = 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/JK%20Logo%20OK-AeCRffSQ2waJkiJgmYXrq3SDUIQWzD.png'
-const hero = 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/ChatGPT%20Image%205%20de%20set.%20de%202026%2C%2000_34_58-pi4LDn3Qhc74q5b8CaG8pHs8Qicnzu.png'
 const categories = [
   { name: 'Torneiras', image: 'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&w=900&q=85' },
   { name: 'Misturadores', image: 'https://images.unsplash.com/photo-1552321554-5fefe8c9ef14?auto=format&fit=crop&w=900&q=85' },
@@ -17,7 +16,7 @@ const categories = [
 export default function Home() {
   return (
     <main id="top" className="overflow-hidden">
-      <HeroCinematic image={hero} />
+      <HeroCinematic />
 
       <section id="essencia" className="texture border-y border-white/10 px-5 py-28 md:px-10 md:py-40" aria-labelledby="essencia-title">
         <div className="mx-auto grid max-w-7xl gap-12 md:grid-cols-[.8fr_1.2fr] md:items-end">
