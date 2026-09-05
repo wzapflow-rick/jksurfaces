@@ -3,7 +3,7 @@
 :root { --ink: #080b0f; --surface: #11161b; --paper: #f2f1ec; --muted: #a8aaa7; --line: rgba(242,241,236,.18); --champagne: #c7b79b; --steel: #8ea0a6; }
 @theme inline { --color-ink: var(--ink); --color-surface: var(--surface); --color-paper: var(--paper); --color-muted: var(--muted); --color-champagne: var(--champagne); --color-steel: var(--steel); --color-background: var(--ink); --color-foreground: var(--paper); --font-sans: var(--font-geist); --font-serif: var(--font-cormorant); }
 * { box-sizing: border-box; }
-html { scroll-behavior: smooth; background: var(--ink); }
+html { scroll-behavior: smooth; scroll-padding-top: 5rem; background: var(--ink); }
 body { margin: 0; background: var(--ink); color: var(--paper); font-family: var(--font-geist), Arial, sans-serif; }
 ::selection { background: var(--champagne); color: var(--ink); }
 :focus-visible { outline: 1px solid var(--champagne); outline-offset: 5px; }
@@ -58,4 +58,61 @@ body { margin: 0; background: var(--ink); color: var(--paper); font-family: var(
 @keyframes scroll-mark { 0%, 100% { opacity: .25; transform: scaleY(.75); transform-origin: top; } 50% { opacity: .8; transform: scaleY(1); transform-origin: top; } }
 @media (max-width: 767px) { .product-card, .product-card:nth-child(2), .product-card:nth-child(3), .product-card:nth-child(4) { position: relative; top: auto; } .hero-scroll-mark { right: 1.5rem; bottom: 1.75rem; } }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; transition-duration: .01ms !important; } .hero-opening { display: none; } .hero-copy, .hero-title-line > * { opacity: 1; transform: none; animation: none; } .hero-photo { transition: none; } .hero-atelier-media { animation: none; } .hero-scroll-mark { animation: none; opacity: .45; } }
+
+/* Header */
+.site-header { transition: background-color 400ms ease, backdrop-filter 400ms ease, border-color 400ms ease; border-bottom: 1px solid transparent; }
+.site-header-scrolled { background: rgba(8,11,15,.72); border-bottom-color: var(--line); backdrop-filter: blur(14px); }
+
+/* Logo intro */
+.logo-intro { position: fixed; inset: 0; z-index: 100; display: grid; place-items: center; background: #050607; animation: intro-clear .5s 1.7s forwards; }
+.logo-intro-mark { position: relative; transform-style: preserve-3d; perspective: 1000px; animation: intro-mark 2.2s cubic-bezier(.2,.7,.2,1) forwards; }
+.logo-intro-mark img { filter: drop-shadow(0 30px 50px rgba(199,183,155,.22)); }
+.logo-intro-sheen { position: absolute; inset: 6% -20%; pointer-events: none; background: linear-gradient(100deg, transparent 42%, rgba(255,239,207,.85) 50%, transparent 58%); mix-blend-mode: screen; animation: intro-sheen 2.2s ease-in-out forwards; }
+@keyframes intro-mark {
+  0% { opacity: 0; transform: scale(.82) rotateY(-14deg); }
+  16% { opacity: 1; transform: scale(1) rotateY(0deg); }
+  60% { opacity: 1; transform: scale(1) rotateY(360deg); }
+  72% { opacity: 1; transform: translate(0,0) scale(1) rotateY(360deg); }
+  100% { opacity: 1; transform: translate(calc(-50vw + 3.6rem), calc(-50vh + 2.6rem)) scale(.14) rotateY(360deg); }
+}
+@keyframes intro-sheen { 0%, 30% { transform: translateX(-90%); opacity: 0; } 46% { opacity: .9; } 66%, 100% { transform: translateX(90%); opacity: 0; } }
+@keyframes intro-clear { to { opacity: 0; visibility: hidden; } }
+
+/* Search overlay */
+.search-overlay { background: rgba(5,6,7,.9); backdrop-filter: blur(16px); animation: overlay-fade .3s ease both; }
+.search-overlay-panel { animation: overlay-rise .45s cubic-bezier(.2,.7,.2,1) both; }
+@keyframes overlay-fade { from { opacity: 0; } to { opacity: 1; } }
+@keyframes overlay-rise { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
+
+/* Hero scene */
+.hero-scene { background: #050607; }
+.hero-scene-image { filter: brightness(.72) contrast(1.05); }
+.hero-scene-veil { background: linear-gradient(to top, rgba(5,6,7,.92) 0%, rgba(5,6,7,.35) 45%, rgba(5,6,7,.55) 100%); }
+.hero-scroll-line { display: inline-block; width: 1px; height: 34px; background: linear-gradient(to bottom, transparent, var(--champagne)); animation: scroll-mark 2.4s 900ms ease-in-out infinite; }
+
+/* Product assembly */
+.product-assembly { min-height: 340vh; background: #0a0d11; }
+.product-assembly-sticky { background: radial-gradient(ellipse at 64% 48%, #1b1f25 0%, #0a0d11 62%); }
+.product-assembly-space { background-image: url('/images/hero-space.png'); background-size: cover; background-position: center; will-change: opacity, transform; }
+.product-assembly-veil { background: radial-gradient(ellipse at center, transparent 32%, rgba(8,11,15,.72) 100%); }
+.assembly-text-frame { position: relative; min-height: 13rem; }
+.assembly-text { position: absolute; inset: 0; transition: opacity .5s ease, clip-path .65s cubic-bezier(.2,.7,.2,1); }
+.assembly-progress-dot { display: block; height: 1px; width: 2rem; background: rgba(242,241,236,.2); transition: background-color .4s ease; }
+.assembly-progress-dot.is-active { background: var(--champagne); }
+.assembly-final { transition: opacity .6s ease, transform .6s ease; }
+.assembly-stage { position: relative; width: min(76vw, 30rem); aspect-ratio: 1; box-shadow: 0 34px 80px rgba(0,0,0,.5); transition: outline-color .6s ease; outline: 1px solid transparent; }
+.assembly-stage.is-complete { outline-color: rgba(199,183,155,.28); }
+
+/* Cinematic grade so demo imagery coheres with the dark editorial palette */
+.category-img { filter: grayscale(1) brightness(.7) contrast(1.08); transition: filter .7s ease, transform .7s ease; }
+.category-tile:hover .category-img { filter: grayscale(.12) brightness(.9) contrast(1.05); }
+.product-img { filter: brightness(.78) contrast(1.07) saturate(.9); transition: filter .7s ease, transform .7s ease; }
+.product-item:hover .product-img { filter: brightness(.9) contrast(1.05) saturate(.96); }
+.inspiration-tile img { filter: brightness(.72) contrast(1.07) saturate(.88); transition: filter .7s ease, transform .7s ease; }
+.inspiration-tile:hover img { filter: brightness(.88) contrast(1.05) saturate(.95); }
+.assembly-ghost { position: absolute; inset: 0; background-image: url('/images/faucet.png'); background-size: contain; background-position: center; background-repeat: no-repeat; transition: opacity .2s linear, filter .2s linear; }
+.assembly-band { position: absolute; left: 0; right: 0; height: 20%; background-repeat: no-repeat; background-size: 100% 500%; will-change: transform, opacity; }
+.assembly-sheen { position: absolute; inset: 0; opacity: 0; pointer-events: none; }
+.assembly-stage.is-complete .assembly-sheen { opacity: 1; background: linear-gradient(100deg, transparent 40%, rgba(255,239,207,.5) 50%, transparent 60%); mix-blend-mode: screen; animation: editorial-sheen 3.4s ease-in-out; }
+@media (max-width: 767px) { .product-assembly { min-height: 300vh; } .assembly-stage { width: min(72vw, 20rem); } .assembly-text-frame { min-height: 11rem; } }
 
