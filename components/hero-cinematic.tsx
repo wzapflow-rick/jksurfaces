@@ -2,6 +2,8 @@
 
 import { useEffect, useRef, useState } from 'react'
 
+const brandMark = 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/JK-ffYCn9gcm0msoGpOKk1Rrmf3uB6iMr.png'
+
 const stages = [
   { eyebrow: '01 / DESIGN', title: 'A forma inicia\no detalhe.', copy: 'Linhas precisas para espaços que permanecem.' },
   { eyebrow: '02 / TECNOLOGIA', title: 'Precisão em\ncada componente.', copy: 'Engenharia silenciosa por trás do gesto.' },
@@ -68,16 +70,20 @@ export function HeroCinematic() {
   return (
     <section ref={sectionRef} className="hero-build relative min-h-[360vh] bg-ink" aria-labelledby="hero-title">
       <div className="sticky top-0 flex min-h-screen flex-col overflow-hidden px-5 py-5 md:px-10 md:py-7">
+        <div className="hero-opening" aria-hidden="true">
+          <img src={brandMark} alt="" className="brand-opening-mark" />
+          <span className="brand-opening-highlight" />
+        </div>
         <div className="absolute inset-0 opacity-70 [background-image:linear-gradient(rgba(242,241,236,.04)_1px,transparent_1px),linear-gradient(90deg,rgba(242,241,236,.04)_1px,transparent_1px)] [background-size:72px_72px]" />
         <header className="relative z-20 flex items-start justify-between" aria-label="Navegação principal">
-          <a href="#top" aria-label="JK Surfaces — início" className="text-paper"><span className="display block text-4xl leading-none">JK</span><span className="mt-1 block text-[8px] tracking-[.48em] text-paper/60">SURFACES</span></a>
+          <a href="#top" aria-label="JK Surfaces — início" className="brand-header-mark"><img src={brandMark} alt="JK" className="h-12 w-12 object-contain md:h-14 md:w-14" /></a>
           <nav className="hidden items-center gap-7 pt-2 text-[9px] uppercase tracking-[.25em] text-paper/55 md:flex"><a href="/produtos" className="transition-colors hover:text-champagne">Produtos</a><a href="#curadoria" className="transition-colors hover:text-champagne">Curadoria</a><a href="#processo" className="transition-colors hover:text-champagne">Processo</a><a href="#contato" className="transition-colors hover:text-champagne">Contato</a></nav>
           <span className="font-mono text-[9px] tracking-[.2em] text-paper/35 md:hidden">JK / 001</span>
         </header>
 
         <div className="relative mx-auto flex w-full max-w-7xl flex-1 items-center justify-center">
           <aside className="absolute left-0 top-1/2 z-10 hidden -translate-y-1/2 flex-col gap-8 md:flex" aria-label="Etapas da montagem">{stages.map((item, index) => <div key={item.eyebrow} className={`flex items-center gap-3 transition-opacity duration-500 ${index === stageIndex ? 'opacity-100' : 'opacity-25'}`}><span className="font-mono text-[10px] text-champagne">0{index + 1}</span><span className="h-px w-5 bg-champagne/60" /></div>)}</aside>
-          <div className="hero-build-copy absolute left-0 top-1/2 z-10 max-w-[15rem] -translate-y-1/2 md:left-20 md:max-w-[17rem]"><p className="eyebrow mb-5 text-champagne">{stage.eyebrow}</p><h1 id="hero-title" className="display whitespace-pre-line text-5xl leading-[.9] text-paper md:text-7xl">{stage.title}</h1><p className="mt-7 text-sm leading-6 text-paper/55">{stage.copy}</p><div className="mt-10 h-px w-16 bg-champagne/70" /></div>
+          <div className="hero-build-copy absolute left-0 top-1/2 z-10 max-w-[15rem] -translate-y-1/2 md:left-20 md:max-w-[17rem]"><p className="eyebrow mb-5 text-champagne">{stage.eyebrow}</p><h1 id="hero-title" className="display whitespace-pre-line text-5xl leading-[.9] text-paper md:text-7xl">{stage.title}</h1><p className="mt-7 max-w-sm text-sm leading-6 text-paper/55">Uma curadoria precisa para transformar matéria em presença. A JK SURFACES aproxima o design daquilo que você toca todos os dias.</p><a href="#catalogo" className="mt-8 inline-flex items-center gap-3 border-b border-champagne pb-2 text-[10px] uppercase tracking-[.24em] text-champagne transition-colors hover:text-paper">Explorar produtos <span aria-hidden="true">→</span></a><div className="mt-10 h-px w-16 bg-champagne/70" /></div>
           <ProductAssembly progress={progress} />
           <div className="absolute bottom-3 right-0 hidden max-w-[15rem] text-right md:block"><p className="eyebrow mb-4 text-paper/40">Scroll para montar</p><p className="text-sm leading-6 text-paper/50">Cada componente encontra seu lugar.</p></div>
         </div>
