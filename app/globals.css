@@ -64,10 +64,10 @@ body { margin: 0; background: var(--ink); color: var(--paper); font-family: var(
 .site-header-scrolled { background: rgba(8,11,15,.72); border-bottom-color: var(--line); backdrop-filter: blur(14px); }
 
 /* Logo intro */
-.logo-intro { position: fixed; inset: 0; z-index: 100; display: grid; place-items: center; background: #050607; animation: intro-clear .5s 1.7s forwards; }
-.logo-intro-mark { position: relative; transform-style: preserve-3d; perspective: 1000px; animation: intro-mark 2.2s cubic-bezier(.2,.7,.2,1) forwards; }
+.logo-intro { position: fixed; inset: 0; z-index: 100; display: grid; place-items: center; background: #050607; animation: intro-clear .45s 1.45s forwards; }
+.logo-intro-mark { position: relative; transform-style: preserve-3d; perspective: 1000px; animation: intro-mark 1.9s cubic-bezier(.2,.7,.2,1) forwards; }
 .logo-intro-mark img { filter: drop-shadow(0 30px 50px rgba(199,183,155,.22)); }
-.logo-intro-sheen { position: absolute; inset: 6% -20%; pointer-events: none; background: linear-gradient(100deg, transparent 42%, rgba(255,239,207,.85) 50%, transparent 58%); mix-blend-mode: screen; animation: intro-sheen 2.2s ease-in-out forwards; }
+.logo-intro-sheen { position: absolute; inset: 6% -20%; pointer-events: none; background: linear-gradient(100deg, transparent 42%, rgba(255,239,207,.85) 50%, transparent 58%); mix-blend-mode: screen; animation: intro-sheen 1.9s ease-in-out forwards; }
 @keyframes intro-mark {
   0% { opacity: 0; transform: scale(.82) rotateY(-14deg); }
   16% { opacity: 1; transform: scale(1) rotateY(0deg); }
@@ -115,4 +115,6 @@ body { margin: 0; background: var(--ink); color: var(--paper); font-family: var(
 .assembly-sheen { position: absolute; inset: 0; opacity: 0; pointer-events: none; }
 .assembly-stage.is-complete .assembly-sheen { opacity: 1; background: linear-gradient(100deg, transparent 40%, rgba(255,239,207,.5) 50%, transparent 60%); mix-blend-mode: screen; animation: editorial-sheen 3.4s ease-in-out; }
 @media (max-width: 767px) { .product-assembly { min-height: 300vh; } .assembly-stage { width: min(72vw, 20rem); } .assembly-text-frame { min-height: 11rem; } }
+@media (prefers-reduced-motion: reduce) { .logo-intro { animation-duration: .2s; animation-delay: .35s; } .logo-intro-mark { animation: intro-mark-reduced .5s ease-out forwards; } .logo-intro-sheen { animation: none; } }
+@keyframes intro-mark-reduced { from { opacity: 0; transform: scale(.9); } to { opacity: 1; transform: translate(calc(-50vw + 3.6rem), calc(-50vh + 2.6rem)) scale(.14); } }
 

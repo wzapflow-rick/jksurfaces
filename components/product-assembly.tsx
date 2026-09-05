@@ -5,11 +5,11 @@ import { useEffect, useRef, useState } from 'react'
 // Each stage is a layer (stage-01..05). Today they share one demo asset, but the
 // structure is ready to receive an individual transparent PNG per part later.
 const stages = [
-  { id: 'stage-01', index: '01', label: 'Design', text: 'Tudo começa no detalhe.', image: '/images/faucet.png', offset: [-150, -30] },
-  { id: 'stage-02', index: '02', label: 'Tecnologia', text: 'Precisão em cada componente.', image: '/images/faucet.png', offset: [130, -14] },
-  { id: 'stage-03', index: '03', label: 'Qualidade', text: 'Materiais escolhidos para durar.', image: '/images/faucet.png', offset: [-100, 6] },
-  { id: 'stage-04', index: '04', label: 'Funcionalidade', text: 'Pensada para o uso diário.', image: '/images/faucet.png', offset: [120, 18] },
-  { id: 'stage-05', index: '05', label: 'Resultado', text: 'Um produto completo.', image: '/images/faucet.png', offset: [-140, 34] },
+  { id: 'stage-01', index: '01', label: 'Matéria', text: 'Tudo começa no detalhe.', image: '/images/faucet.png', offset: [-150, -30] },
+  { id: 'stage-02', index: '02', label: 'Precisão', text: 'Cada escolha pede intenção.', image: '/images/faucet.png', offset: [130, -14] },
+  { id: 'stage-03', index: '03', label: 'Acabamento', text: 'Superfícies que atravessam o tempo.', image: '/images/faucet.png', offset: [-100, 6] },
+  { id: 'stage-04', index: '04', label: 'Uso', text: 'Forma e função em equilíbrio.', image: '/images/faucet.png', offset: [120, 18] },
+  { id: 'stage-05', index: '05', label: 'Presença', text: 'O detalhe transforma o espaço.', image: '/images/faucet.png', offset: [-140, 34] },
 ]
 
 const clamp = (value: number) => Math.min(1, Math.max(0, value))
@@ -113,7 +113,7 @@ export function ProductAssembly() {
                 )
               })}
               <span className="assembly-sheen" aria-hidden="true" />
-              <span className="sr-only">Sequência de montagem de uma torneira JK, do componente ao produto completo.</span>
+              <span className="sr-only">Composição visual de um objeto de design, da matéria ao resultado.</span>
             </div>
           </div>
         </div>
