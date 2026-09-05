@@ -2,7 +2,6 @@ import Image from 'next/image'
 import { CategoryRail } from '@/components/category-rail'
 import { FeaturedProducts } from '@/components/featured-products'
 import { HeroCinematic } from '@/components/hero-cinematic'
-import { SiteHeader } from '@/components/site-header'
 
 const logo = 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/JK%20Logo%20OK-AeCRffSQ2waJkiJgmYXrq3SDUIQWzD.png'
 const hero = 'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=2200&q=88'
@@ -18,7 +17,6 @@ const categories = [
 export default function Home() {
   return (
     <main id="top" className="overflow-hidden">
-      <SiteHeader />
       <HeroCinematic image={hero} />
 
       <section id="essencia" className="texture border-y border-white/10 px-5 py-28 md:px-10 md:py-40" aria-labelledby="essencia-title">
