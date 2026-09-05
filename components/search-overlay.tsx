@@ -2,8 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react'
 
-const filters = ['Nome', 'SKU', 'Marca', 'Acabamento', 'Categoria']
-const suggestions = ['Torneiras de bancada', 'Chuveiros de teto', 'Acabamento champagne', 'Misturadores monocomando', 'Cubas em pedra natural']
+const filters = ['Categoria', 'Acabamento', 'Palavra-chave']
 
 export function SearchOverlay({ open, onClose }: { open: boolean; onClose: () => void }) {
   const inputRef = useRef<HTMLInputElement>(null)
@@ -41,7 +40,7 @@ export function SearchOverlay({ open, onClose }: { open: boolean; onClose: () =>
             value={query}
             onChange={(event) => setQuery(event.target.value)}
             type="search"
-            placeholder="Busque por nome, SKU, marca ou acabamento"
+            placeholder="Busque por categoria, acabamento ou palavra-chave"
             className="display w-full bg-transparent text-2xl text-paper outline-none placeholder:text-paper/30 md:text-4xl"
           />
         </div>
@@ -50,19 +49,7 @@ export function SearchOverlay({ open, onClose }: { open: boolean; onClose: () =>
             <span key={filter} className="rounded-full border border-white/15 px-4 py-2 text-[10px] uppercase tracking-[.2em] text-paper/60">{filter}</span>
           ))}
         </div>
-        <div className="mt-10">
-          <p className="text-[10px] uppercase tracking-[.24em] text-paper/35">Sugestões</p>
-          <ul className="mt-4 flex flex-col divide-y divide-white/10 border-y border-white/10">
-            {suggestions.map((item) => (
-              <li key={item}>
-                <button type="button" className="flex w-full items-center justify-between py-4 text-left text-sm text-paper/70 transition-colors hover:text-champagne">
-                  {item}
-                  <span aria-hidden="true" className="text-champagne">→</span>
-                </button>
-              </li>
-            ))}
-          </ul>
-        </div>
+        <p className="mt-10 max-w-md text-sm leading-7 text-paper/45">A busca será ativada quando o catálogo oficial estiver disponível.</p>
       </div>
     </div>
   )

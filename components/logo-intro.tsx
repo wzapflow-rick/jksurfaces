@@ -10,12 +10,8 @@ export function LogoIntro() {
   const [phase, setPhase] = useState<'idle' | 'playing' | 'done'>('idle')
 
   useEffect(() => {
-    const alreadyPlayed = window.sessionStorage.getItem('jk-intro-played')
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-    // Skip path keeps the null-rendering idle state — nothing to update.
-    if (alreadyPlayed || reduceMotion) return
-
-    window.sessionStorage.setItem('jk-intro-played', '1')
+    // A abertura acontece uma vez por carregamento, sem persistir estado entre recargas.
     let timer = 0
     const raf = requestAnimationFrame(() => {
       document.body.style.overflow = 'hidden'
@@ -23,7 +19,7 @@ export function LogoIntro() {
       timer = window.setTimeout(() => {
         setPhase('done')
         document.body.style.overflow = ''
-      }, 2200)
+      }, reduceMotion ? 650 : 1900)
     })
     return () => {
       cancelAnimationFrame(raf)
