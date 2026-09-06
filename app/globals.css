@@ -40,8 +40,9 @@ body { margin: 0; background: var(--ink); color: var(--paper); font-family: var(
 @media (max-width: 767px) { .hero-atelier-media { min-height: 22rem; } .hero-atelier-media::after { inset: .75rem; } }
 
 .editorial-marquee { overflow: hidden; background: var(--surface); }
-.editorial-marquee-track { display: flex; width: max-content; gap: 2rem; animation: marquee 28s linear infinite; }
-.editorial-marquee:hover .editorial-marquee-track { animation-play-state: paused; }
+.editorial-marquee-track { display: flex; width: max-content; gap: 2rem; animation: marquee 24s linear infinite; will-change: transform; }
+.editorial-marquee-track > span { flex: none; }
+.editorial-marquee:hover .editorial-marquee-track { animation-play-state: running; }
 .process-step { transition: padding-left 500ms cubic-bezier(.2,.7,.2,1), background-color 500ms ease; }
 .process-step:hover { padding-left: 1.25rem; background: rgba(199,183,155,.04); }
 .project-stack { display: grid; gap: 1rem; }
