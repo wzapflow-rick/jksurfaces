@@ -8,10 +8,10 @@ import { SearchOverlay } from '@/components/search-overlay'
 const brandMark = 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/JK-ffYCn9gcm0msoGpOKk1Rrmf3uB6iMr.png'
 
 const nav = [
-  { label: 'Produtos', href: '#catalogo' },
-  { label: 'Seleção', href: '#selecao' },
+  { label: 'Destaques', href: '#destaques' },
+  { label: 'Categorias', href: '#catalogo' },
+  { label: 'Mais vendidos', href: '#selecao' },
   { label: 'Inspiração', href: '#inspiracao' },
-  { label: 'Sobre', href: '#sobre' },
   { label: 'Contato', href: '#contato' },
 ]
 

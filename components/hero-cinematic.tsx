@@ -18,7 +18,7 @@ export function HeroCinematic() {
 
       <div className="relative z-10 mx-auto flex w-full max-w-7xl flex-1 flex-col px-5 pt-28 md:px-10 md:pt-32">
         <header className="mx-auto max-w-4xl text-center">
-          <p className="eyebrow mb-6 reveal-up">Metais · acabamentos · soluções</p>
+          <p className="eyebrow mb-6 reveal-up">Loja de metais · entrega para todo o Brasil</p>
           <RollingTitle
             id="hero-title"
             className="display text-6xl leading-[.88] text-paper md:text-8xl lg:text-[8rem]"
@@ -37,20 +37,20 @@ export function HeroCinematic() {
 
         <footer className="relative z-10 mx-auto mb-12 flex max-w-xl flex-col items-center gap-6 text-center md:mb-16">
           <p className="max-w-md text-sm leading-7 text-paper/70">
-            Produtos que unem qualidade, funcionalidade e design para deixar cada projeto ainda mais completo. Arraste para explorar a coleção.
+            Torneiras, misturadores e acabamentos com pronta entrega para todo o Brasil. Escolha, compre e receba em casa.
           </p>
           <div className="flex flex-col items-center gap-5 sm:flex-row">
             <a
-              href="#selecao"
+              href="#destaques"
               className="inline-flex items-center gap-3 bg-champagne px-8 py-3 text-[11px] uppercase tracking-[.24em] text-ink transition-colors hover:bg-paper"
             >
-              Explorar produtos <span aria-hidden="true">→</span>
+              Comprar agora <span aria-hidden="true">→</span>
             </a>
             <a
-              href="#contato"
+              href="#catalogo"
               className="inline-flex items-center gap-3 border-b border-white/25 pb-1 text-[11px] uppercase tracking-[.24em] text-paper/70 transition-colors hover:border-champagne hover:text-champagne"
             >
-              Fale com a JK
+              Ver catálogo
             </a>
           </div>
         </footer>

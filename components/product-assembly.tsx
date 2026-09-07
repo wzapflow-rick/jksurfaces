@@ -5,11 +5,11 @@ import { useEffect, useRef, useState } from 'react'
 // Each stage is a layer (stage-01..05). Today they share one demo asset, but the
 // structure is ready to receive an individual transparent PNG per part later.
 const stages = [
-  { id: 'stage-01', index: '01', label: 'Qualidade', text: 'Produtos escolhidos para durar.', image: '/images/faucet.png', offset: [-150, -30] },
-  { id: 'stage-02', index: '02', label: 'Funcionalidade', text: 'Soluções pensadas para o dia a dia.', image: '/images/faucet.png', offset: [130, -14] },
-  { id: 'stage-03', index: '03', label: 'Design', text: 'Detalhes que valorizam o ambiente.', image: '/images/faucet.png', offset: [-100, 6] },
-  { id: 'stage-04', index: '04', label: 'Confiança', text: 'Boas escolhas do início ao fim.', image: '/images/faucet.png', offset: [120, 18] },
-  { id: 'stage-05', index: '05', label: 'Projeto', text: 'O detalhe certo completa o espaço.', image: '/images/faucet.png', offset: [-140, 34] },
+  { id: 'stage-01', index: '01', label: 'Entrega Brasil', text: 'Enviamos para todo o país, com rastreio do pedido.', image: '/images/faucet.png', offset: [-150, -30] },
+  { id: 'stage-02', index: '02', label: 'Pagamento seguro', text: 'Cartão, Pix e parcelamento com total segurança.', image: '/images/faucet.png', offset: [130, -14] },
+  { id: 'stage-03', index: '03', label: 'Produtos originais', text: 'Somente marcas reconhecidas e itens com garantia.', image: '/images/faucet.png', offset: [-100, 6] },
+  { id: 'stage-04', index: '04', label: 'Compra fácil', text: 'Escolha, finalize e receba sem complicação.', image: '/images/faucet.png', offset: [120, 18] },
+  { id: 'stage-05', index: '05', label: 'Suporte real', text: 'Time pronto para ajudar antes e depois da compra.', image: '/images/faucet.png', offset: [-140, 34] },
 ]
 
 const clamp = (value: number) => Math.min(1, Math.max(0, value))
@@ -54,7 +54,7 @@ export function ProductAssembly() {
 
         <div className="relative z-10 mx-auto grid w-full max-w-7xl items-center gap-8 px-5 md:grid-cols-[1fr_1fr] md:px-10">
           <div className="order-2 md:order-1">
-            <p className="eyebrow mb-6" id="experiencia-title">Nossa essência</p>
+            <p className="eyebrow mb-6" id="experiencia-title">Por que comprar na JK</p>
             <div className="assembly-text-frame relative">
               {stages.map((stage, index) => {
                 const isActive = index === activeStage
@@ -84,9 +84,9 @@ export function ProductAssembly() {
             </div>
 
             <div className="assembly-final mt-10" style={{ opacity: showFinal ? 1 : 0, transform: showFinal ? 'translateY(0)' : 'translateY(12px)' }}>
-              <p className="display text-2xl text-paper md:text-3xl">Boas escolhas transformam projetos.</p>
-              <a href="#catalogo" className="mt-5 inline-flex items-center gap-3 border-b border-champagne pb-2 text-[10px] uppercase tracking-[.24em] text-champagne transition-colors hover:text-paper">
-                Explorar produtos <span aria-hidden="true">→</span>
+              <p className="display text-2xl text-paper md:text-3xl">Comprar bem é comprar com segurança.</p>
+              <a href="#destaques" className="mt-5 inline-flex items-center gap-3 border-b border-champagne pb-2 text-[10px] uppercase tracking-[.24em] text-champagne transition-colors hover:text-paper">
+                Comprar agora <span aria-hidden="true">→</span>
               </a>
             </div>
           </div>

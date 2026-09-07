@@ -3,6 +3,7 @@ import { ContactCta } from '@/components/contact-cta'
 import { CuratedSection } from '@/components/curated-section'
 import { EditorialMarquee } from '@/components/editorial-marquee'
 import { FavoritesProvider } from '@/components/favorites-context'
+import { FeaturedTiers } from '@/components/featured-tiers'
 import { HeroCinematic } from '@/components/hero-cinematic'
 import { InspirationSection } from '@/components/inspiration-section'
 import { LogoIntro } from '@/components/logo-intro'
@@ -20,16 +21,17 @@ export default function Home() {
       <main>
         <HeroCinematic />
         <EditorialMarquee />
-        <ProductAssembly />
+        <FeaturedTiers />
         <CatalogCategories />
+        <ProductAssembly />
 
         <section id="selecao" className="bg-surface px-5 py-24 md:px-10 md:py-36" aria-labelledby="selecao-title">
           <div className="mx-auto max-w-7xl">
             <div className="mb-14 max-w-2xl">
-              <p className="eyebrow mb-4">Seleção JK</p>
-              <h2 id="selecao-title" className="display text-5xl text-paper md:text-7xl">Escolhas que valorizam o projeto.</h2>
+              <p className="eyebrow mb-4">Mais vendidos</p>
+              <h2 id="selecao-title" className="display text-5xl text-paper md:text-7xl">Os produtos que mais saem.</h2>
               <p className="mt-6 max-w-lg text-sm leading-7 text-paper/55">
-                Produtos selecionados pela combinação entre qualidade, funcionalidade e design.
+                Os favoritos dos nossos clientes, com pronta entrega para todo o Brasil.
               </p>
             </div>
             <ProductGrid />
