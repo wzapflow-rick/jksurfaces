@@ -15,16 +15,16 @@ export function CatalogCategories() {
       <div className="mx-auto max-w-7xl">
         <div className="mb-14 flex flex-col gap-8 md:flex-row md:items-end md:justify-between">
           <div className="max-w-2xl">
-            <p className="eyebrow mb-5">Catálogo</p>
+            <p className="eyebrow mb-5">Compre por categoria</p>
             <h2 id="catalogo-title" className="display text-4xl leading-[.98] text-paper md:text-6xl text-balance">
-              Produtos que valorizam cada detalhe do seu projeto.
+              Encontre o produto certo em segundos.
             </h2>
             <p className="mt-6 max-w-lg text-sm leading-7 text-paper/55">
-              Metais, acabamentos e soluções que unem design, funcionalidade e durabilidade para ambientes únicos.
+              Metais, louças, acabamentos e acessórios organizados para você achar e comprar rápido.
             </p>
           </div>
-          <a href="#selecao" className="shrink-0 border-b border-champagne pb-2 text-[10px] uppercase tracking-[.24em] text-champagne transition-colors hover:text-paper">
-            Ver todos os produtos →
+          <a href="#destaques" className="shrink-0 border-b border-champagne pb-2 text-[10px] uppercase tracking-[.24em] text-champagne transition-colors hover:text-paper">
+            Ver destaques →
           </a>
         </div>
 

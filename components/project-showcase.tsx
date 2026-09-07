@@ -5,7 +5,7 @@ export function ProjectShowcase() {
         <div className="mb-14 flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
           <div>
             <p className="eyebrow mb-5">Projetos</p>
-            <h2 id="projetos-title" className="display max-w-2xl text-6xl leading-[.88] text-paper md:text-8xl">A matéria em contexto.</h2>
+            <h2 id="projetos-title" className="display max-w-2xl text-6xl leading-[.88] text-paper md:text-8xl">Produtos em contexto.</h2>
           </div>
           <p className="max-w-xs text-sm leading-7 text-paper/50 md:pb-2">Em breve, uma seleção de projetos reais e suas escolhas de acabamento.</p>
         </div>

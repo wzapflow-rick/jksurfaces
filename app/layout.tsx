@@ -6,12 +6,12 @@ const geist = Geist({ subsets: ['latin'], variable: '--font-geist' })
 const cormorant = Cormorant_Garamond({ subsets: ['latin'], variable: '--font-cormorant', weight: ['300', '400', '500', '600'] })
 
 export const metadata: Metadata = {
-  title: 'JK SURFACES | Design que transforma espaços',
-  description: 'Metais, acabamentos e soluções que unem qualidade, funcionalidade e design para seus projetos.',
-  keywords: ['metais', 'acabamentos', 'torneiras', 'misturadores', 'duchas', 'design de interiores', 'JK Surfaces'],
+  title: 'JK SURFACES | Torneiras e Metais com Entrega para Todo o Brasil',
+  description: 'Compre torneiras, misturadores e acabamentos com pronta entrega para todo o Brasil. Pagamento seguro e parcelamento.',
+  keywords: ['comprar torneira', 'misturadores', 'metais para banheiro', 'torneira cozinha', 'acabamentos', 'loja de metais', 'JK Surfaces'],
   openGraph: {
-    title: 'JK SURFACES | Design que transforma espaços',
-    description: 'Metais, acabamentos e soluções que unem qualidade, funcionalidade e design para seus projetos.',
+    title: 'JK SURFACES | Torneiras e Metais com Entrega para Todo o Brasil',
+    description: 'Compre torneiras, misturadores e acabamentos com pronta entrega para todo o Brasil. Pagamento seguro e parcelamento.',
     type: 'website',
   },
 }

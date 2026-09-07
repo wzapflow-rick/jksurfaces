@@ -8,15 +8,16 @@ import { SearchOverlay } from '@/components/search-overlay'
 const brandMark = 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/JK-ffYCn9gcm0msoGpOKk1Rrmf3uB6iMr.png'
 
 const nav = [
-  { label: 'Produtos', href: '#catalogo' },
-  { label: 'Curadoria', href: '#curadoria' },
+  { label: 'Destaques', href: '#destaques' },
+  { label: 'Categorias', href: '#catalogo' },
+  { label: 'Mais vendidos', href: '#selecao' },
   { label: 'Inspiração', href: '#inspiracao' },
-  { label: 'Sobre', href: '#sobre' },
   { label: 'Contato', href: '#contato' },
 ]
 
 export function SiteHeader() {
   const [scrolled, setScrolled] = useState(false)
+  const [overHero, setOverHero] = useState(true)
   const [menuOpen, setMenuOpen] = useState(false)
   const [searchOpen, setSearchOpen] = useState(false)
   const { count } = useFavorites()
@@ -28,9 +29,26 @@ export function SiteHeader() {
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
 
+  useEffect(() => {
+    const hero = document.getElementById('top')
+    if (!hero) return
+    const observer = new IntersectionObserver(
+      ([entry]) => setOverHero(entry.isIntersecting),
+      { rootMargin: '-72px 0px 0px 0px', threshold: 0 },
+    )
+    observer.observe(hero)
+    return () => observer.disconnect()
+  }, [])
+
+  // Mantém o header visível apenas sobre o Hero; ao sair dele, desliza para cima.
+  const visible = overHero || menuOpen
+
   return (
     <>
-      <header className={`site-header fixed inset-x-0 top-0 z-[60] px-5 md:px-10 ${scrolled || menuOpen ? 'site-header-scrolled' : ''}`}>
+      <header
+        className={`site-header fixed inset-x-0 top-0 z-[60] px-5 md:px-10 ${scrolled || menuOpen ? 'site-header-scrolled' : ''} ${visible ? '' : 'site-header-hidden'}`}
+        aria-hidden={visible ? undefined : true}
+      >
         <div className="mx-auto flex max-w-7xl items-center justify-between py-4 md:py-5">
           <a href="#top" aria-label="JK Surfaces — início" className="shrink-0">
             <Image src={brandMark} alt="JK Surfaces" width={96} height={96} priority className="h-9 w-9 object-contain md:h-11 md:w-11" />
