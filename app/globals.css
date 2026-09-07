@@ -56,8 +56,9 @@ body { margin: 0; background: var(--ink); color: var(--paper); font-family: var(
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; transition-duration: .01ms !important; } .hero-opening { display: none; } .hero-copy, .hero-title-line > * { opacity: 1; transform: none; animation: none; } .hero-photo { transition: none; } .hero-atelier-media { animation: none; } .hero-scroll-mark { animation: none; opacity: .45; } }
 
 /* Header */
-.site-header { transition: background-color 400ms ease, backdrop-filter 400ms ease, border-color 400ms ease; border-bottom: 1px solid transparent; }
+.site-header { transition: background-color 400ms ease, backdrop-filter 400ms ease, border-color 400ms ease, transform 400ms cubic-bezier(.4,0,.2,1), opacity 400ms ease; border-bottom: 1px solid transparent; }
 .site-header-scrolled { background: rgba(8,11,15,.72); border-bottom-color: var(--line); backdrop-filter: blur(14px); }
+.site-header-hidden { transform: translateY(-100%); opacity: 0; pointer-events: none; }
 
 /* Logo intro */
 .logo-intro { position: fixed; inset: 0; z-index: 100; display: grid; place-items: center; background: #050607; animation: intro-clear .45s 1.45s forwards; }
