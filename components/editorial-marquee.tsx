@@ -4,8 +4,8 @@ import { useEffect, useRef, useState, startTransition } from 'react'
 
 const items = ['Metais que permanecem', 'Acabamentos com intenção', 'Design para o cotidiano', 'Especificação sem ruído']
 
-// Velocidade base em % da largura de um bloco por segundo.
-const BASE_VELOCITY = 26
+// Velocidade base em % da largura de um bloco por segundo. Mais baixo = mais lento e legível.
+const BASE_VELOCITY = 9
 
 function Block({ hidden = false, blockRef }: { hidden?: boolean; blockRef?: React.Ref<HTMLDivElement> }) {
   return (
