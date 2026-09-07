@@ -1,4 +1,5 @@
 import { HeroProductCarousel, type CarouselItem } from '@/components/hero-product-carousel'
+import { RollingTitle } from '@/components/rolling-title'
 
 const products: CarouselItem[] = [
   { src: '/products/faucet-1785.png', alt: 'Torneira de mesa touchless bica baixa para lavatório — linha 1785' },
@@ -18,9 +19,15 @@ export function HeroCinematic() {
       <div className="relative z-10 mx-auto flex w-full max-w-7xl flex-1 flex-col px-5 pt-28 md:px-10 md:pt-32">
         <header className="mx-auto max-w-4xl text-center">
           <p className="eyebrow mb-6 reveal-up">Metais · acabamentos · soluções</p>
-          <h1 id="hero-title" className="display text-6xl leading-[.88] text-paper md:text-8xl lg:text-[8rem] reveal-up text-balance">
-            Detalhes que <span className="italic text-champagne">definem</span> espaços.
-          </h1>
+          <RollingTitle
+            id="hero-title"
+            className="display text-6xl leading-[.88] text-paper md:text-8xl lg:text-[8rem]"
+            segments={[
+              { text: 'Detalhes que ' },
+              { text: 'definem', className: 'italic text-champagne' },
+              { text: ' espaços.' },
+            ]}
+          />
         </header>
 
         <div className="hero3d-stage relative mt-4 flex flex-1 items-center justify-center md:mt-2">
