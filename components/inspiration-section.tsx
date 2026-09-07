@@ -14,14 +14,14 @@ export function InspirationSection() {
         <div className="mb-12 flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
           <div>
             <p className="eyebrow mb-5">Inspiração</p>
-            <h2 id="inspiracao-title" className="display text-5xl text-paper md:text-7xl">Onde o detalhe vive.</h2>
+            <h2 id="inspiracao-title" className="display text-5xl text-paper md:text-7xl">Inspiração para o seu próximo projeto.</h2>
           </div>
-          <p className="max-w-xs text-sm leading-7 text-paper/50 md:pb-2">Ambientes que mostram como um bom acabamento muda a experiência de um espaço.</p>
+          <p className="max-w-xs text-sm leading-7 text-paper/50 md:pb-2">Produtos e referências aplicados em diferentes espaços para inspirar o seu próximo projeto.</p>
         </div>
 
         <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-4">
           {ambientes.map((ambiente) => (
-            <a key={ambiente.name} href="#curadoria" className="inspiration-tile group relative block overflow-hidden bg-surface">
+            <a key={ambiente.name} href="#selecao-editorial" className="inspiration-tile group relative block overflow-hidden bg-surface">
               <div className="relative aspect-[3/4] w-full">
                 <Image src={ambiente.image} alt={`Inspiração de ${ambiente.name}`} fill sizes="(min-width: 768px) 25vw, 100vw" className="object-cover transition duration-700 group-hover:scale-105" />
                 <div className="absolute inset-0 bg-gradient-to-t from-ink/80 via-transparent to-transparent" />

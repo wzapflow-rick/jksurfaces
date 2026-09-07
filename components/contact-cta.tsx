@@ -4,10 +4,10 @@ export function ContactCta() {
       <div className="mx-auto flex max-w-4xl flex-col items-center text-center">
         <p className="eyebrow mb-6">Atendimento</p>
         <h2 id="contato-title" className="display text-5xl leading-[.95] text-paper md:text-8xl text-balance">
-          Precisa de ajuda para escolher?
+          Seu projeto começa nas escolhas.
         </h2>
         <p className="mt-8 max-w-md text-sm leading-7 text-paper/60 md:text-base">
-          Fale com nossa equipe. Ajudamos a especificar cada detalhe do seu projeto com precisão e cuidado.
+          Encontre produtos que unem qualidade, funcionalidade e design.
         </p>
         {/* Preparado para receber o link do WhatsApp da JK futuramente. */}
         <button

@@ -4,7 +4,7 @@ const wordmark = 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/JK%20L
 
 const nav = [
   { label: 'Produtos', href: '#catalogo' },
-  { label: 'Curadoria', href: '#curadoria' },
+  { label: 'Seleção', href: '#selecao' },
   { label: 'Inspiração', href: '#inspiracao' },
   { label: 'Sobre', href: '#sobre' },
   { label: 'Contato', href: '#contato' },

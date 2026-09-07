@@ -27,9 +27,9 @@ export default function Home() {
           <div className="mx-auto max-w-7xl">
             <div className="mb-14 max-w-2xl">
               <p className="eyebrow mb-4">Seleção JK</p>
-              <h2 id="selecao-title" className="display text-5xl text-paper md:text-7xl">Produtos em destaque</h2>
+              <h2 id="selecao-title" className="display text-5xl text-paper md:text-7xl">Escolhas que valorizam o projeto.</h2>
               <p className="mt-6 max-w-lg text-sm leading-7 text-paper/55">
-                Uma seleção de detalhes escolhidos para projetos que valorizam qualidade, funcionalidade e design.
+                Produtos selecionados pela combinação entre qualidade, funcionalidade e design.
               </p>
             </div>
             <ProductGrid />

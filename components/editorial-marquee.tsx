@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState, startTransition } from 'react'
 
-const items = ['Metais que permanecem', 'Acabamentos com intenção', 'Design para o cotidiano', 'Especificação sem ruído']
+const items = ['Qualidade', 'Funcionalidade', 'Design', 'Boas escolhas', 'Detalhes que fazem diferença']
 
 // Velocidade base em % da largura de um bloco por segundo. Mais baixo = mais lento e legível.
 const BASE_VELOCITY = 9

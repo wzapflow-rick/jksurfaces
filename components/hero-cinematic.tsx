@@ -23,9 +23,9 @@ export function HeroCinematic() {
             id="hero-title"
             className="display text-6xl leading-[.88] text-paper md:text-8xl lg:text-[8rem]"
             segments={[
-              { text: 'Detalhes que ' },
-              { text: 'definem', className: 'italic text-champagne' },
-              { text: ' espaços.' },
+              { text: 'Metais que ' },
+              { text: 'transformam', className: 'italic text-champagne' },
+              { text: ' projetos.' },
             ]}
           />
         </header>
@@ -37,7 +37,7 @@ export function HeroCinematic() {
 
         <footer className="relative z-10 mx-auto mb-12 flex max-w-xl flex-col items-center gap-6 text-center md:mb-16">
           <p className="max-w-md text-sm leading-7 text-paper/70">
-            Uma curadoria precisa de metais e acabamentos para transformar matéria em presença. Arraste para explorar a coleção.
+            Produtos que unem qualidade, funcionalidade e design para deixar cada projeto ainda mais completo. Arraste para explorar a coleção.
           </p>
           <div className="flex flex-col items-center gap-5 sm:flex-row">
             <a
@@ -47,10 +47,10 @@ export function HeroCinematic() {
               Explorar produtos <span aria-hidden="true">→</span>
             </a>
             <a
-              href="#catalogo"
+              href="#contato"
               className="inline-flex items-center gap-3 border-b border-white/25 pb-1 text-[11px] uppercase tracking-[.24em] text-paper/70 transition-colors hover:border-champagne hover:text-champagne"
             >
-              Ver categorias
+              Fale com a JK
             </a>
           </div>
         </footer>
