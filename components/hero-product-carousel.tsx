@@ -34,7 +34,6 @@ export function HeroProductCarousel({
   const velRef = useRef(0)
   const lastRef = useRef(0)
   const dragRef = useRef({ active: false, x: 0 })
-  const reduceRef = useRef(false)
 
   const count = items.length
   const angle = 360 / count
@@ -43,7 +42,6 @@ export function HeroProductCarousel({
   const degPerSec = speed * 6 * (direction === 'left' ? -1 : 1)
 
   useEffect(() => {
-    reduceRef.current = window.matchMedia('(prefers-reduced-motion: reduce)').matches
     const ring = ringRef.current
     if (!ring) return
 
@@ -58,11 +56,11 @@ export function HeroProductCarousel({
       const f = Math.min(dt, 0.1)
       const d = dragRef.current
       if (!d.active) {
+        // Giro base contínuo, sempre ativo. O arrasto soma um impulso que decai suavemente até voltar ao giro base.
+        rotYRef.current += degPerSec * f
         if (Math.abs(velRef.current) > 0.01) {
           rotYRef.current += velRef.current * f
           velRef.current *= 0.94
-        } else if (!reduceRef.current) {
-          rotYRef.current += degPerSec * f
         }
       }
       apply()
