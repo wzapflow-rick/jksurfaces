@@ -4,6 +4,7 @@ import { CuratedSection } from '@/components/curated-section'
 import { EditorialMarquee } from '@/components/editorial-marquee'
 import { FavoritesProvider } from '@/components/favorites-context'
 import { FeaturedTiers } from '@/components/featured-tiers'
+import { BrandLogos } from '@/components/brand-logos'
 import { HeroCinematic } from '@/components/hero-cinematic'
 import { InspirationSection } from '@/components/inspiration-section'
 import { LogoIntro } from '@/components/logo-intro'
@@ -22,6 +23,7 @@ export default function Home() {
         <HeroCinematic />
         <EditorialMarquee />
         <FeaturedTiers />
+        <BrandLogos />
         <CatalogCategories />
         <ProductAssembly />
 

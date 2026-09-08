@@ -126,6 +126,13 @@ body { margin: 0; background: var(--ink); color: var(--paper); font-family: var(
   .rolling-title[data-play='true'] .roll-inner { transform: none !important; animation: none !important; }
 }
 
+/* Faixa de marcas — carrossel de logos em loop contínuo */
+.brand-logos-track { animation: brand-logos-scroll 34s linear infinite; }
+.brand-logos-mask:hover .brand-logos-track { animation-play-state: paused; }
+@keyframes brand-logos-scroll { to { transform: translateX(-50%); } }
+.brand-logos-mask { -webkit-mask-image: linear-gradient(to right, transparent, #000 12%, #000 88%, transparent); mask-image: linear-gradient(to right, transparent, #000 12%, #000 88%, transparent); }
+@media (prefers-reduced-motion: reduce) { .brand-logos-track { animation: none; } }
+
 /* Hero 3D — anel giratório de produtos */
 .hero3d { background: radial-gradient(ellipse at 50% 32%, #141a20 0%, #080b0f 58%, #050607 100%); }
 .hero3d-grid { opacity: .5; background-image: linear-gradient(rgba(242,241,236,.04) 1px, transparent 1px), linear-gradient(90deg, rgba(242,241,236,.04) 1px, transparent 1px); background-size: 72px 72px; mask-image: radial-gradient(ellipse at 50% 45%, black 6%, transparent 70%); }
