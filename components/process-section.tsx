@@ -1,7 +1,7 @@
 const steps = [
-  { number: '01', title: 'Entender', text: 'Lemos o projeto antes de escolher o produto. Contexto, escala e uso guiam cada decisão.' },
-  { number: '02', title: 'Especificar', text: 'Traduzimos intenção em acabamentos, medidas e soluções que funcionam no detalhe.' },
-  { number: '03', title: 'Entregar', text: 'Acompanhamos a escolha até a instalação para que o resultado mantenha a promessa.' },
+  { number: '01', title: 'Entender', text: 'Conhecemos o projeto e entendemos o que você precisa.' },
+  { number: '02', title: 'Escolher', text: 'Encontramos produtos alinhados ao estilo e às necessidades do espaço.' },
+  { number: '03', title: 'Entregar', text: 'Mais segurança na escolha e atenção aos detalhes até a entrega.' },
 ]
 
 export function ProcessSection() {
@@ -10,8 +10,8 @@ export function ProcessSection() {
       <div className="mx-auto grid max-w-7xl gap-16 lg:grid-cols-[.7fr_1.3fr]">
         <div className="lg:sticky lg:top-28 lg:self-start">
           <p className="eyebrow mb-6">04 / Como trabalhamos</p>
-          <h2 id="processo-title" className="display max-w-md text-6xl leading-[.88] text-paper md:text-8xl">Do primeiro traço ao último detalhe.</h2>
-          <p className="mt-8 max-w-sm text-sm leading-7 text-paper/55">Uma curadoria próxima, técnica e sensível para transformar referências em espaços que fazem sentido.</p>
+          <h2 id="processo-title" className="display max-w-md text-6xl leading-[.88] text-paper md:text-8xl">Do projeto à escolha certa.</h2>
+          <p className="mt-8 max-w-sm text-sm leading-7 text-paper/55">Ajudamos você a encontrar produtos que façam sentido para o seu projeto, unindo estética, funcionalidade e qualidade.</p>
         </div>
         <div className="divide-y divide-white/10 border-y border-white/10">
           {steps.map((step) => (

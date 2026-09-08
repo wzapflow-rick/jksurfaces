@@ -1,43 +1,59 @@
-import Image from 'next/image'
+import { HeroProductCarousel, type CarouselItem } from '@/components/hero-product-carousel'
+import { RollingTitle } from '@/components/rolling-title'
+
+const products: CarouselItem[] = [
+  { src: '/products/faucet-1785.png', alt: 'Torneira de mesa touchless bica baixa para lavatório — linha 1785' },
+  { src: '/products/faucet-disco.png', alt: 'Misturador de mesa bica alta com manoplas cruzeta — linha Disco' },
+  { src: '/products/faucet-decamatic.png', alt: 'Misturador monocomando para lavatório — linha Decamatic Eco' },
+  { src: '/products/faucet-polo.png', alt: 'Misturador de mesa bica alta quadrada — linha Polo' },
+  { src: '/products/faucet-auto.png', alt: 'Torneira de mesa automática para lavatório — linha 1173' },
+  { src: '/products/faucet-spin.png', alt: 'Misturador monocomando de mesa para cozinha — linha Spin' },
+]
 
 export function HeroCinematic() {
   return (
-    <section id="top" className="hero-scene relative flex min-h-screen items-end overflow-hidden" aria-labelledby="hero-title">
-      <Image
-        src="/images/hero-space.png"
-        alt="Banheiro contemporâneo com metais champagne sobre cuba de pedra natural"
-        fill
-        priority
-        sizes="100vw"
-        className="hero-scene-image object-cover"
-      />
-      <div className="hero-scene-veil absolute inset-0" aria-hidden="true" />
+    <section id="top" className="hero3d relative flex min-h-screen flex-col overflow-hidden" aria-labelledby="hero-title">
+      <div className="hero3d-grid absolute inset-0" aria-hidden="true" />
+      <div className="hero3d-glow absolute inset-0" aria-hidden="true" />
 
-      <div className="relative z-10 w-full px-5 pb-16 md:px-10 md:pb-24">
-        <div className="mx-auto flex max-w-7xl flex-col gap-10 md:flex-row md:items-end md:justify-between">
-          <div className="max-w-2xl">
-            <p className="eyebrow mb-6 reveal-up">Metais · acabamentos · soluções</p>
-            <h1 id="hero-title" className="display text-6xl leading-[.9] text-paper md:text-8xl lg:text-9xl reveal-up">
-              Detalhes que
-              <br />
-              <span className="text-champagne">definem</span> espaços.
-            </h1>
-            <p className="mt-8 max-w-md text-sm leading-7 text-paper/70 md:text-base reveal-up">
-              Uma curadoria precisa para transformar matéria em presença. A JK SURFACES aproxima o design daquilo que você toca todos os dias.
-            </p>
+      <div className="relative z-10 mx-auto flex w-full max-w-7xl flex-1 flex-col px-5 pt-28 md:px-10 md:pt-32">
+        <header className="mx-auto max-w-4xl text-center">
+          <p className="eyebrow mb-6 reveal-up">Loja de metais · entrega para todo o Brasil</p>
+          <RollingTitle
+            id="hero-title"
+            className="display text-6xl leading-[.88] text-paper md:text-8xl lg:text-[8rem]"
+            segments={[
+              { text: 'Metais que ' },
+              { text: 'transformam', className: 'italic text-champagne' },
+              { text: ' projetos.' },
+            ]}
+          />
+        </header>
+
+        <div className="hero3d-stage relative mt-4 flex flex-1 items-center justify-center md:mt-2">
+          <div className="hero3d-floor" aria-hidden="true" />
+          <HeroProductCarousel items={products} />
+        </div>
+
+        <footer className="relative z-10 mx-auto mb-12 flex max-w-xl flex-col items-center gap-6 text-center md:mb-16">
+          <p className="max-w-md text-sm leading-7 text-paper/70">
+            Torneiras, misturadores e acabamentos com pronta entrega para todo o Brasil. Escolha, compre e receba em casa.
+          </p>
+          <div className="flex flex-col items-center gap-5 sm:flex-row">
+            <a
+              href="#destaques"
+              className="inline-flex items-center gap-3 bg-champagne px-8 py-3 text-[11px] uppercase tracking-[.24em] text-ink transition-colors hover:bg-paper"
+            >
+              Comprar agora <span aria-hidden="true">→</span>
+            </a>
             <a
               href="#catalogo"
-              className="mt-9 inline-flex items-center gap-3 border-b border-champagne pb-2 text-[11px] uppercase tracking-[.24em] text-champagne transition-colors hover:text-paper reveal-up"
+              className="inline-flex items-center gap-3 border-b border-white/25 pb-1 text-[11px] uppercase tracking-[.24em] text-paper/70 transition-colors hover:border-champagne hover:text-champagne"
             >
-              Explorar produtos <span aria-hidden="true">→</span>
+              Ver catálogo
             </a>
           </div>
-
-          <div className="flex items-center gap-4 text-[9px] uppercase tracking-[.24em] text-paper/45">
-            <span className="hero-scroll-line" aria-hidden="true" />
-            Role para descobrir
-          </div>
-        </div>
+        </footer>
       </div>
     </section>
   )

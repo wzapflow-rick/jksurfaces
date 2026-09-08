@@ -3,10 +3,10 @@ import Image from 'next/image'
 const wordmark = 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/JK%20Logo%20OK-AeCRffSQ2waJkiJgmYXrq3SDUIQWzD.png'
 
 const nav = [
-  { label: 'Produtos', href: '#catalogo' },
-  { label: 'Curadoria', href: '#curadoria' },
+  { label: 'Destaques', href: '#destaques' },
+  { label: 'Categorias', href: '#catalogo' },
+  { label: 'Mais vendidos', href: '#selecao' },
   { label: 'Inspiração', href: '#inspiracao' },
-  { label: 'Sobre', href: '#sobre' },
   { label: 'Contato', href: '#contato' },
 ]
 

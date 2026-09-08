@@ -2,24 +2,27 @@
 
 import Image from 'next/image'
 import { useEffect, useState } from 'react'
+import { useCart } from '@/components/cart-context'
 import { useFavorites } from '@/components/favorites-context'
 import { SearchOverlay } from '@/components/search-overlay'
 
 const brandMark = 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/JK-ffYCn9gcm0msoGpOKk1Rrmf3uB6iMr.png'
 
 const nav = [
-  { label: 'Produtos', href: '#catalogo' },
-  { label: 'Curadoria', href: '#curadoria' },
+  { label: 'Destaques', href: '#destaques' },
+  { label: 'Categorias', href: '#catalogo' },
+  { label: 'Mais vendidos', href: '#selecao' },
   { label: 'Inspiração', href: '#inspiracao' },
-  { label: 'Sobre', href: '#sobre' },
   { label: 'Contato', href: '#contato' },
 ]
 
 export function SiteHeader() {
   const [scrolled, setScrolled] = useState(false)
+  const [overHero, setOverHero] = useState(true)
   const [menuOpen, setMenuOpen] = useState(false)
   const [searchOpen, setSearchOpen] = useState(false)
   const { count } = useFavorites()
+  const { count: cartCount, open: openCart } = useCart()
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24)
@@ -28,9 +31,26 @@ export function SiteHeader() {
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
 
+  useEffect(() => {
+    const hero = document.getElementById('top')
+    if (!hero) return
+    const observer = new IntersectionObserver(
+      ([entry]) => setOverHero(entry.isIntersecting),
+      { rootMargin: '-72px 0px 0px 0px', threshold: 0 },
+    )
+    observer.observe(hero)
+    return () => observer.disconnect()
+  }, [])
+
+  // Mantém o header visível apenas sobre o Hero; ao sair dele, desliza para cima.
+  const visible = overHero || menuOpen
+
   return (
     <>
-      <header className={`site-header fixed inset-x-0 top-0 z-[60] px-5 md:px-10 ${scrolled || menuOpen ? 'site-header-scrolled' : ''}`}>
+      <header
+        className={`site-header fixed inset-x-0 top-0 z-[60] px-5 md:px-10 ${scrolled || menuOpen ? 'site-header-scrolled' : ''} ${visible ? '' : 'site-header-hidden'}`}
+        aria-hidden={visible ? undefined : true}
+      >
         <div className="mx-auto flex max-w-7xl items-center justify-between py-4 md:py-5">
           <a href="#top" aria-label="JK Surfaces — início" className="shrink-0">
             <Image src={brandMark} alt="JK Surfaces" width={96} height={96} priority className="h-9 w-9 object-contain md:h-11 md:w-11" />
@@ -49,6 +69,10 @@ export function SiteHeader() {
             <button type="button" aria-label={`Favoritos (${count})`} className="relative p-1 text-paper/70 transition-colors hover:text-champagne">
               <HeartIcon className="h-5 w-5" />
               {count > 0 && <span className="absolute -right-1.5 -top-1.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-champagne px-1 text-[9px] font-medium text-ink">{count}</span>}
+            </button>
+            <button type="button" onClick={openCart} aria-label={`Carrinho (${cartCount})`} className="relative p-1 text-paper/70 transition-colors hover:text-champagne">
+              <BagIcon className="h-5 w-5" />
+              {cartCount > 0 && <span className="absolute -right-1.5 -top-1.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-champagne px-1 text-[9px] font-medium text-ink">{cartCount}</span>}
             </button>
             <a href="#contato" className="hidden border border-champagne/60 px-5 py-2.5 text-[10px] uppercase tracking-[.22em] text-champagne transition-colors hover:bg-champagne hover:text-ink md:inline-block">Fale com a JK</a>
             <button type="button" onClick={() => setMenuOpen((prev) => !prev)} aria-expanded={menuOpen} aria-controls="mobile-menu" aria-label="Abrir menu" className="p-1 text-paper/80 lg:hidden">
@@ -84,6 +108,15 @@ function HeartIcon({ className }: { className?: string }) {
   return (
     <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true">
       <path d="M12 20s-7-4.35-9.5-8.5C1 8.5 2.5 5.5 5.5 5.5c2 0 3.2 1.2 3.7 2.2h.6C10.3 6.7 11.5 5.5 13.5 5.5c3 0 4.5 3 3 6C19 15.65 12 20 12 20Z" strokeLinejoin="round" />
+    </svg>
+  )
+}
+
+function BagIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true">
+      <path d="M6 8h12l-1 12H7L6 8Z" strokeLinejoin="round" />
+      <path d="M9 8V6a3 3 0 0 1 6 0v2" strokeLinecap="round" />
     </svg>
   )
 }

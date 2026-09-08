@@ -1,8 +1,13 @@
+import { fetchCart } from '@/app/actions/cart'
+import { CartDrawer } from '@/components/cart-drawer'
+import { CartProvider } from '@/components/cart-context'
 import { CatalogCategories } from '@/components/catalog-categories'
 import { ContactCta } from '@/components/contact-cta'
 import { CuratedSection } from '@/components/curated-section'
 import { EditorialMarquee } from '@/components/editorial-marquee'
 import { FavoritesProvider } from '@/components/favorites-context'
+import { FeaturedTiers } from '@/components/featured-tiers'
+import { BrandLogos } from '@/components/brand-logos'
 import { HeroCinematic } from '@/components/hero-cinematic'
 import { InspirationSection } from '@/components/inspiration-section'
 import { LogoIntro } from '@/components/logo-intro'
@@ -10,38 +15,46 @@ import { ProductAssembly } from '@/components/product-assembly'
 import { ProductGrid } from '@/components/product-grid'
 import { SiteFooter } from '@/components/site-footer'
 import { SiteHeader } from '@/components/site-header'
+import { getProducts } from '@/lib/shopify'
 
-export default function Home() {
+export default async function Home() {
+  const [products, initialCart] = await Promise.all([getProducts(12), fetchCart()])
+
   return (
     <FavoritesProvider>
-      <LogoIntro />
-      <SiteHeader />
+      <CartProvider initialCart={initialCart}>
+        <LogoIntro />
+        <SiteHeader />
 
-      <main>
-        <HeroCinematic />
-        <EditorialMarquee />
-        <ProductAssembly />
-        <CatalogCategories />
+        <main>
+          <HeroCinematic />
+          <EditorialMarquee />
+          <FeaturedTiers products={products} />
+          <BrandLogos />
+          <CatalogCategories />
+          <ProductAssembly />
 
-        <section id="selecao" className="bg-surface px-5 py-24 md:px-10 md:py-36" aria-labelledby="selecao-title">
-          <div className="mx-auto max-w-7xl">
-            <div className="mb-14 max-w-2xl">
-              <p className="eyebrow mb-4">Seleção JK</p>
-              <h2 id="selecao-title" className="display text-5xl text-paper md:text-7xl">Produtos em destaque</h2>
-              <p className="mt-6 max-w-lg text-sm leading-7 text-paper/55">
-                Uma seleção de detalhes escolhidos para projetos que valorizam qualidade, funcionalidade e design.
-              </p>
+          <section id="selecao" className="bg-surface px-5 py-24 md:px-10 md:py-36" aria-labelledby="selecao-title">
+            <div className="mx-auto max-w-7xl">
+              <div className="mb-14 max-w-2xl">
+                <p className="eyebrow mb-4">Mais vendidos</p>
+                <h2 id="selecao-title" className="display text-5xl text-paper md:text-7xl">Os produtos que mais saem.</h2>
+                <p className="mt-6 max-w-lg text-sm leading-7 text-paper/55">
+                  Os favoritos dos nossos clientes, com pronta entrega para todo o Brasil.
+                </p>
+              </div>
+              <ProductGrid />
             </div>
-            <ProductGrid />
-          </div>
-        </section>
+          </section>
 
-        <CuratedSection />
-        <InspirationSection />
-        <ContactCta />
-      </main>
+          <CuratedSection />
+          <InspirationSection />
+          <ContactCta />
+        </main>
 
-      <SiteFooter />
+        <SiteFooter />
+        <CartDrawer />
+      </CartProvider>
     </FavoritesProvider>
   )
 }
