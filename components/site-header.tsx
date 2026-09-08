@@ -2,6 +2,7 @@
 
 import Image from 'next/image'
 import { useEffect, useState } from 'react'
+import { useCart } from '@/components/cart-context'
 import { useFavorites } from '@/components/favorites-context'
 import { SearchOverlay } from '@/components/search-overlay'
 
@@ -21,6 +22,7 @@ export function SiteHeader() {
   const [menuOpen, setMenuOpen] = useState(false)
   const [searchOpen, setSearchOpen] = useState(false)
   const { count } = useFavorites()
+  const { count: cartCount, open: openCart } = useCart()
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24)
@@ -68,6 +70,10 @@ export function SiteHeader() {
               <HeartIcon className="h-5 w-5" />
               {count > 0 && <span className="absolute -right-1.5 -top-1.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-champagne px-1 text-[9px] font-medium text-ink">{count}</span>}
             </button>
+            <button type="button" onClick={openCart} aria-label={`Carrinho (${cartCount})`} className="relative p-1 text-paper/70 transition-colors hover:text-champagne">
+              <BagIcon className="h-5 w-5" />
+              {cartCount > 0 && <span className="absolute -right-1.5 -top-1.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-champagne px-1 text-[9px] font-medium text-ink">{cartCount}</span>}
+            </button>
             <a href="#contato" className="hidden border border-champagne/60 px-5 py-2.5 text-[10px] uppercase tracking-[.22em] text-champagne transition-colors hover:bg-champagne hover:text-ink md:inline-block">Fale com a JK</a>
             <button type="button" onClick={() => setMenuOpen((prev) => !prev)} aria-expanded={menuOpen} aria-controls="mobile-menu" aria-label="Abrir menu" className="p-1 text-paper/80 lg:hidden">
               <MenuIcon open={menuOpen} className="h-5 w-5" />
@@ -102,6 +108,15 @@ function HeartIcon({ className }: { className?: string }) {
   return (
     <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true">
       <path d="M12 20s-7-4.35-9.5-8.5C1 8.5 2.5 5.5 5.5 5.5c2 0 3.2 1.2 3.7 2.2h.6C10.3 6.7 11.5 5.5 13.5 5.5c3 0 4.5 3 3 6C19 15.65 12 20 12 20Z" strokeLinejoin="round" />
+    </svg>
+  )
+}
+
+function BagIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true">
+      <path d="M6 8h12l-1 12H7L6 8Z" strokeLinejoin="round" />
+      <path d="M9 8V6a3 3 0 0 1 6 0v2" strokeLinecap="round" />
     </svg>
   )
 }
